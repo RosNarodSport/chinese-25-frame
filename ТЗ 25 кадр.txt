@@ -1,0 +1,287 @@
+---
+name: 25-й кадр приложение
+overview: "Создать с нуля в `C:\\my_cursor\\Китайский 25 кадр` полнофункциональное PyQt5-приложение «25-й кадр. Китайский язык» по спецификации из docx: три вкладки (Начало работы, Показ, АДМИН), SQLite-хранилище, автопоказ карточек, история настроек, загрузка Excel и админ-панель."
+todos:
+  - id: scaffold
+    content: Создать структуру проекта в C:\my_cursor\Китайский 25 кадр, скопировать HSK-данные, favicon, requirements.txt
+    status: completed
+  - id: database
+    content: Реализовать models/database.py и show_settings.py со всеми таблицами и seed HSK
+    status: completed
+  - id: ui
+    content: "Создать/расширить main_window.ui: 3 вкладки, все контролы из spec (гость, история, admin, tilt, shuffle, excel)"
+    status: pending
+  - id: auth-session
+    content: "Реализовать auth.py и session.py: login/register/guest/admin, счётчик входов, work_time"
+    status: in_progress
+  - id: settings
+    content: "Реализовать settings_manager.py: 10 пресетов, rename/delete, save/load, defaults, exit-диалог"
+    status: pending
+  - id: slideshow
+    content: "Реализовать slideshow.py: QTimer, pause/resume, progress, visibility flags, queue builder"
+    status: pending
+  - id: excel
+    content: Реализовать excel_import.py + шаблон word_list_template.xlsx
+    status: pending
+  - id: admin
+    content: "Реализовать admin.py и вкладку АДМИН: users CRUD, metrics, custom lists"
+    status: pending
+  - id: main-wiring
+    content: "Собрать main.py: layout scaling, signal wiring, tab switching, closeEvent"
+    status: pending
+  - id: build
+    content: PyInstaller spec, smoke-тест exe на Windows 11
+    status: pending
+isProject: false
+---
+
+# План: «25-й кадр. Китайский язык» (полная спецификация)
+
+## Исходные данные
+
+Спецификация из [`ОБЩЕЕ НАЗНАЧЕНИЕ ПРОГРАММЫ 25cadr.docx`](C:\Users\DSOTF\Desktop\ВАЙБ\ОБЩЕЕ НАЗНАЧЕНИЕ ПРОГРАММЫ 25cadr.docx) описывает Windows 11 desktop-приложение для изучения китайского методом быстрого показа карточек (иероглиф, пиньинь, перевод, фраза).
+
+**Переиспользуем из существующего прототипа** [`C:\my_cursor\25cadr`](C:\my_cursor\25cadr):
+- словарь HSK (~1202 записи) — [`db/hieroglyphs.py`](C:\my_cursor\25cadr\db\hieroglyphs.py)
+- идеи UI и масштабирования экрана — [`views/cadr25_step2.ui`](C:\my_cursor\25cadr\views\cadr25_step2.ui), [`main.py`](C:\my_cursor\25cadr\main.py)
+- иконка [`favicon.ico`](C:\my_cursor\25cadr\favicon.ico)
+
+**Не копируем код 1:1** — в старом проекте нет slideshow-движка, таблицы `users`, гостевого режима, истории настроек и вкладки АДМИН.
+
+---
+
+## Целевая архитектура
+
+```mermaid
+flowchart TB
+    subgraph ui [PyQt5 UI]
+        TabStart[tab_start: Начало работы]
+        TabShow[tab_show: Показ]
+        TabAdmin[tab_admin: АДМИН]
+    end
+
+    subgraph services [Services]
+        AuthService[auth.py]
+        SettingsService[settings_manager.py]
+        SlideshowEngine[slideshow.py]
+        ImportService[excel_import.py]
+        AdminService[admin.py]
+        SessionService[session.py]
+    end
+
+    subgraph data [SQLite hsk_base.db]
+        Users[(users)]
+        Presets[(settings_presets)]
+        CustomLists[(custom_word_lists)]
+        Dictionary[(main_table_for_show)]
+        Stats[(app_stats)]
+    end
+
+    TabStart --> AuthService
+    TabStart --> SettingsService
+    TabStart --> ImportService
+    TabShow --> SlideshowEngine
+    TabAdmin --> AdminService
+
+    AuthService --> Users
+    SettingsService --> Presets
+    ImportService --> CustomLists
+    SlideshowEngine --> Dictionary
+    SlideshowEngine --> CustomLists
+    SessionService --> Stats
+```
+
+### Структура нового проекта
+
+```
+C:\my_cursor\Китайский 25 кадр\
+├── main.py                      # точка входа, wiring сигналов
+├── requirements.txt             # PyQt5, openpyxl, pyinstaller
+├── views/
+│   └── main_window.ui           # 3 вкладки в Qt Designer
+├── models/
+│   ├── database.py              # init/migrations SQLite
+│   └── show_settings.py         # dataclass настроек показа
+├── services/
+│   ├── auth.py                  # login/register/guest/admin
+│   ├── settings_manager.py      # CRUD 10 пресетов, rename/delete
+│   ├── slideshow.py             # QTimer, pause, progress
+│   ├── excel_import.py          # загрузка пользовательских списков
+│   ├── admin.py                 # управление пользователями/списками
+│   └── session.py               # счётчик входов, work_time_total
+├── data/
+│   └── hieroglyphs.py           # копия HSK-данных
+├── templates/
+│   └── word_list_template.xlsx  # шаблон для «Загрузить список»
+└── build/
+    └── Reading25.spec           # PyInstaller exe
+```
+
+---
+
+## Схема базы данных
+
+| Таблица | Назначение |
+|---------|------------|
+| `users` | user_id, user_name, user_password, login_count, work_time_total, last_date, is_admin |
+| `settings_presets` | до 10 записей на пользователя: имя, hsk/list, speed, color, start_no, count, font_size, shuffle, tilt, visibility flags, created_at |
+| `custom_word_lists` | list_id, user_id, name, card_count |
+| `custom_words` | list_id, number, hieroglyph, pinyin, translation, phrase |
+| `main_table_for_show` | HSK1–4 словарь (seed из hieroglyphs.py) |
+| `app_stats` | total_app_opens, admin metrics |
+
+**Дефолты для первого запуска** (из spec): HSK1, задержка 5 сек, зелёный цвет, старт с 1, 150 статей, шрифт 20.
+
+**Формат автоимени пресета**: `N-dd-mm-yyyy-h:m` (N — порядковый номер входа).
+
+---
+
+## Экран №1 — «Начало работы»
+
+### Блок 1: Вход
+- Поля: имя, пароль
+- Кнопки: **Войти**, **Регистрация**, **Войти, как гость**
+- После успешного входа: скрыть форму входа, показать имя (зелёным), блок «История», счётчик входов «Вход №: N+1»
+- Гость: имя «Гость», без сохранения настроек в БД (сессионные настройки в памяти)
+
+### Блок 2: История настроек (до 10)
+- Выпадающий список (иконка «свиток») с последними пресетами
+- У каждого: иконки удалить / переименовать (макс. 15 символов)
+- При выборе — разворачивает: группа слов, задержка (#.# от 0 до 10), цвет, старт No, число статей, размер шрифта
+- Кнопка **Запуск** → переход на вкладку «Показ» с выбранными настройками
+
+### Блок 3: Настройка новых параметров
+- HSK1–4 (radio/checkbox — один уровень)
+- **Загрузить список** + ссылка **Шаблон** (Excel)
+- Слайдер скорости (0–10, шаг 0.1; при 10 → 0.2 сек — логика из spec)
+- Radio: чёрный / зелёный / синий / красный
+- Поле «число статей в показе»
+- Слайдер «номер старта»
+- Чекбоксы: **Перемешать**, **Наклон** (градусы)
+- Live-preview иероглифа (размер/цвет/наклон)
+- Кнопка **Сохранить настройки** → диалог с автоименем + поле своего имени
+
+### Блок 4: Содержимое показа
+- Чекбоксы: иероглиф, пиньинь, перевод, фраза
+
+### Блок 5: Служебная информация
+- Дата последнего входа, общее время занятий, название комплекта
+- Кнопка **Выйти** → если настройки не сохранены, диалог «сохранить / отказаться / отмена»
+
+---
+
+## Экран №2 — «Показ»
+
+- Слева вверху: название списка (мелко)
+- По центру вверху: **ПАУЗА** (останавливает QTimer, сохраняет текущий индекс)
+- Справа вверху: номер карточки
+- Центр: иероглиф (крупно, цвет), пиньинь, перевод, фраза — по флагам видимости
+- **Старт показа** → `QTimer` с интервалом из настроек, последовательная смена карточек
+- **Закончить показ** → стоп, диалог сохранения настроек, возврат на «Начало работы»
+- **ProgressBar** — `(current_index / total) * 100%`
+- При паузе пользователь может перейти на «Начало работы», изменить настройки и вернуться — изменения применяются к текущей сессии
+
+### Slideshow-движок ([`services/slideshow.py`](services/slideshow.py))
+
+```python
+# Ключевая логика
+class SlideshowController:
+    def build_queue(settings) -> list[int]  # HSK filter / custom list / shuffle
+    def start() / pause() / resume() / stop()
+    def tick()  # advance index, update labels, progress, work_time
+```
+
+---
+
+## Панель АДМИН (только admin/admin)
+
+- Скрытая 3-я вкладка, видна после входа admin/admin
+- **Посмотреть пользователей**: таблица, удаление, смена пароля/имени
+- Метрики: число пользователей, число пресетов, число запусков приложения
+- Список пользовательских Excel-списков (название, число карточек) + удаление
+- Полный доступ ко всем вкладкам
+
+---
+
+## UI: что взять из старого, что добавить
+
+| Элемент | Старый UI | Нужно по spec |
+|---------|-----------|---------------|
+| Вход/регистрация | есть | + гость |
+| История 10 пресетов | нет | создать QComboBox + custom widget |
+| Кнопка «Запуск» | нет (есть «Старт показа» на другой вкладке) | добавить на tab_start |
+| Excel import | нет | QFileDialog + openpyxl |
+| Перемешать / Наклон | нет | добавить |
+| Вкладка АДМИН | нет | новая tab_admin |
+| Выход с подтверждением | нет | QCloseEvent + диалог |
+| End show → save | нет | диалог + redirect |
+
+Рекомендация: **расширить** существующий `.ui` из [`cadr25_step2.ui`](C:\my_cursor\25cadr\views\cadr25_step2.ui) как базу, а не рисовать с нуля — экономит ~60% вёрстки.
+
+---
+
+## Зависимости
+
+```txt
+PyQt5>=5.15
+openpyxl>=3.1
+pyinstaller>=6.0
+```
+
+---
+
+## Этапы реализации
+
+### Фаза 1 — Каркас и данные
+- Инициализация проекта, копирование HSK-данных и favicon
+- [`models/database.py`](models/database.py): создание всех таблиц, seed HSK
+- [`models/show_settings.py`](models/show_settings.py): единая модель настроек
+- Базовый [`main.py`](main.py) + загрузка UI + масштабирование под экран (из старого main.py)
+
+### Фаза 2 — Аутентификация и сессия
+- [`services/auth.py`](services/auth.py): register, login, guest, admin detection
+- [`services/session.py`](services/session.py): login_count++, work_time_total
+- UI: скрытие формы входа, отображение профиля, счётчик «Вход №»
+
+### Фаза 3 — Настройки и история
+- [`services/settings_manager.py`](services/settings_manager.py): CRUD 10 пресетов, rename/delete, defaults
+- Wiring всех контролов tab_start (HSK, speed, color, start, count, font, shuffle, tilt, visibility)
+- Live-preview иероглифа
+- Кнопки «Сохранить настройки», «Запуск», «Выйти» с диалогами
+
+### Фаза 4 — Slideshow (ядро)
+- [`services/slideshow.py`](services/slideshow.py): QTimer, queue builder, pause/resume
+- tab_show: Start/Pause/End, progress bar, label updates
+- Учёт work_time во время показа
+
+### Фаза 5 — Excel и шаблон
+- [`templates/word_list_template.xlsx`](templates/word_list_template.xlsx)
+- [`services/excel_import.py`](services/excel_import.py): валидация колонок, сохранение в custom_word_lists
+- Ссылка «Шаблон» открывает файл
+
+### Фаза 6 — Админ-панель
+- [`services/admin.py`](services/admin.py): list/delete users, reset password, metrics
+- tab_admin UI + wiring
+- Скрытие вкладки для не-admin пользователей
+
+### Фаза 7 — Сборка и полировка
+- PyInstaller spec → `Reading25.exe`
+- Проверка сценариев: первый запуск, гость, admin, pause→edit→resume, exit без save
+- Исправление опечаток UI («Созранить» → «Сохранить»)
+
+---
+
+## Критические решения
+
+1. **Пароли** — в spec нет требования хеширования; для совместимости с admin/admin оставляем plain text (как в прототипе), с возможностью добавить hash позже.
+2. **Скорость показа** — slider 0–10 с шагом 0.1; mapping: `delay_sec = max(0.2, 10 - value * 0.98)` или таблица из spec (10 → 0.2 сек).
+3. **Гость** — настройки только в RAM; при выходе не спрашивать сохранение.
+4. **150 статей по умолчанию** — цикл по выбранному HSK-уровню с wrap-around или stop at end (уточнить при реализации: spec говорит «показываются без остановки по порядку» → циклический показ в пределах count).
+
+---
+
+## Риски
+
+- **Объём UI**: много элементов на одной вкладке — потребуется аккуратная группировка (QGroupBox) и scroll area
+- **Excel-формат**: нужна строгая валидация, иначе сломается slideshow
+- **10 пресетов**: при сохранении 11-го — удалять самый старый (FIFO)

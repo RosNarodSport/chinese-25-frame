@@ -1,0 +1,15 @@
+__pycache__/
+*.py[cod]
+*.pyo
+*.db
+build/*
+!build/Reading25.spec
+dist/
+*.spec.bak
+spec_temp.docx
+spec_extracted.txt
+.env
+.env.*
+*.log
+Thumbs.db
+desktop.ini

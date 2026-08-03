@@ -1,0 +1,1548 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1520</width>
+    <height>1064</height>
+   </rect>
+  </property>
+  <property name="mouseTracking">
+   <bool>false</bool>
+  </property>
+  <property name="tabletTracking">
+   <bool>false</bool>
+  </property>
+  <property name="windowTitle">
+   <string>25-й кадр (китайский язык)</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
+  </property>
+  <property name="inputMethodHints">
+   <set>Qt::ImhNone</set>
+  </property>
+  <property name="documentMode">
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1522</width>
+      <height>962</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>СТАРТ</string>
+     </attribute>
+     <widget class="QLineEdit" name="lineEdit_user_name">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>80</y>
+        <width>226</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="echoMode">
+       <enum>QLineEdit::Normal</enum>
+      </property>
+      <property name="clearButtonEnabled">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_user_password">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>140</y>
+        <width>226</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
+      <property name="clearButtonEnabled">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_enter_user_name">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>80</y>
+        <width>94</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Имя</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_enter_user_password">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>140</y>
+        <width>94</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Пароль</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_login">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>200</y>
+        <width>150</width>
+        <height>46</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Войти</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_sign_up">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>200</y>
+        <width>150</width>
+        <height>46</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Регистрация</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_guest">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>200</y>
+        <width>180</width>
+        <height>46</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Войти, как гость</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_history_title">
+      <property name="geometry">
+       <rect>
+        <x>360</x>
+        <y>360</y>
+        <width>120</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>История</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_login_count">
+      <property name="geometry">
+       <rect>
+        <x>360</x>
+        <y>400</y>
+        <width>200</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Вход №: ...</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBox_presets">
+      <property name="geometry">
+       <rect>
+        <x>360</x>
+        <y>460</y>
+        <width>280</width>
+        <height>40</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_preset_delete">
+      <property name="geometry">
+       <rect>
+        <x>660</x>
+        <y>460</y>
+        <width>40</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>🗑</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_preset_rename">
+      <property name="geometry">
+       <rect>
+        <x>710</x>
+        <y>460</y>
+        <width>40</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>✎</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_launch">
+      <property name="geometry">
+       <rect>
+        <x>360</x>
+        <y>520</y>
+        <width>200</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Запуск</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_load_excel">
+      <property name="geometry">
+       <rect>
+        <x>980</x>
+        <y>480</y>
+        <width>160</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Загрузить список</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_template">
+      <property name="geometry">
+       <rect>
+        <x>1150</x>
+        <y>480</y>
+        <width>120</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Шаблон</string>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_shuffle">
+      <property name="geometry">
+       <rect>
+        <x>980</x>
+        <y>540</y>
+        <width>160</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Перемешать</string>
+      </property>
+     </widget>
+     <widget class="QSlider" name="horizontalSlider_tilt">
+      <property name="geometry">
+       <rect>
+        <x>1160</x>
+        <y>540</y>
+        <width>200</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <number>45</number>
+      </property>
+      <property name="value">
+       <number>0</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_tilt_value">
+      <property name="geometry">
+       <rect>
+        <x>1370</x>
+        <y>540</y>
+        <width>80</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>0°</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_preview_hieroglyph">
+      <property name="geometry">
+       <rect>
+        <x>980</x>
+        <y>600</y>
+        <width>322</width>
+        <height>100</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>48</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>电脑</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_exit">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>880</y>
+        <width>200</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Выйти</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_info_for_user">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>260</y>
+        <width>322</width>
+        <height>102</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>20</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Информация по входу</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_user_name">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>360</y>
+        <width>202</width>
+        <height>62</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>20</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_speed_show">
+      <property name="geometry">
+       <rect>
+        <x>660</x>
+        <y>140</y>
+        <width>182</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>...</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_hieroglyph_size">
+      <property name="geometry">
+       <rect>
+        <x>660</x>
+        <y>380</y>
+        <width>182</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>...</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_hsk_group">
+      <property name="geometry">
+       <rect>
+        <x>660</x>
+        <y>80</y>
+        <width>182</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>...</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_color_scheme">
+      <property name="geometry">
+       <rect>
+        <x>660</x>
+        <y>200</y>
+        <width>202</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>...</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_user_level">
+      <property name="geometry">
+       <rect>
+        <x>80</x>
+        <y>460</y>
+        <width>202</width>
+        <height>62</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>...</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_show_new_start_point_2">
+      <property name="geometry">
+       <rect>
+        <x>660</x>
+        <y>260</y>
+        <width>242</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>...</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_num_hieroglyphs_in_show">
+      <property name="geometry">
+       <rect>
+        <x>660</x>
+        <y>320</y>
+        <width>282</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>...</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_name_of_show_complect">
+      <property name="geometry">
+       <rect>
+        <x>1180</x>
+        <y>840</y>
+        <width>302</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>name_of_show_complect</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_16">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>0</y>
+        <width>562</width>
+        <height>62</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>24</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Ваши предыдущие настройки</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_work_time_total">
+      <property name="geometry">
+       <rect>
+        <x>700</x>
+        <y>840</y>
+        <width>202</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>work_time_total</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_last_date">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>840</y>
+        <width>182</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>...</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_label_color_scheme_label">
+      <property name="geometry">
+       <rect>
+        <x>460</x>
+        <y>200</y>
+        <width>182</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Цветовая схема:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_num_hieroglyphs_in_show_label">
+      <property name="geometry">
+       <rect>
+        <x>380</x>
+        <y>320</y>
+        <width>262</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Число статей в показе:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_last_date_label">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>840</y>
+        <width>262</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Дата последнего входа:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_show_new_start_point_label">
+      <property name="geometry">
+       <rect>
+        <x>400</x>
+        <y>260</y>
+        <width>242</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>С какого No старт:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_speed_show_label">
+      <property name="geometry">
+       <rect>
+        <x>400</x>
+        <y>140</y>
+        <width>242</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Задержка при  показе:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_hieroglyph_size_label">
+      <property name="geometry">
+       <rect>
+        <x>460</x>
+        <y>380</y>
+        <width>182</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Размер шрифта:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_name_of_show_complect_label">
+      <property name="geometry">
+       <rect>
+        <x>920</x>
+        <y>840</y>
+        <width>242</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Название коплекта:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_work_time_total_label">
+      <property name="geometry">
+       <rect>
+        <x>480</x>
+        <y>840</y>
+        <width>202</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Время занятий:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_hsk_group_label">
+      <property name="geometry">
+       <rect>
+        <x>460</x>
+        <y>80</y>
+        <width>182</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Группа HSK:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="Line" name="line_3">
+      <property name="geometry">
+       <rect>
+        <x>360</x>
+        <y>20</y>
+        <width>40</width>
+        <height>502</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+     </widget>
+     <widget class="Line" name="line_4">
+      <property name="geometry">
+       <rect>
+        <x>920</x>
+        <y>60</y>
+        <width>40</width>
+        <height>722</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_26">
+      <property name="geometry">
+       <rect>
+        <x>960</x>
+        <y>0</y>
+        <width>502</width>
+        <height>62</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>24</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Новые настройки игры</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_show_hsk1">
+      <property name="geometry">
+       <rect>
+        <x>980</x>
+        <y>80</y>
+        <width>102</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>HSK1</string>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+      <property name="tristate">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_show_hsk1_2">
+      <property name="geometry">
+       <rect>
+        <x>1120</x>
+        <y>80</y>
+        <width>102</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>HSK2</string>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+      <property name="tristate">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_show_hsk1_3">
+      <property name="geometry">
+       <rect>
+        <x>1260</x>
+        <y>80</y>
+        <width>102</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>HSK3</string>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+      <property name="tristate">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_show_hsk1_4">
+      <property name="geometry">
+       <rect>
+        <x>1380</x>
+        <y>80</y>
+        <width>102</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>HSK4</string>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+      <property name="tristate">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QSlider" name="horizontalSlider_show_new_start_point">
+      <property name="geometry">
+       <rect>
+        <x>980</x>
+        <y>260</y>
+        <width>382</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <number>999</number>
+      </property>
+      <property name="value">
+       <number>1</number>
+      </property>
+      <property name="sliderPosition">
+       <number>1</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_check_new_start_point">
+      <property name="geometry">
+       <rect>
+        <x>1380</x>
+        <y>260</y>
+        <width>102</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>20</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>#</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_black">
+      <property name="geometry">
+       <rect>
+        <x>980</x>
+        <y>200</y>
+        <width>142</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Черный</string>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_green">
+      <property name="geometry">
+       <rect>
+        <x>1120</x>
+        <y>200</y>
+        <width>142</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Зеленый</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_blue">
+      <property name="geometry">
+       <rect>
+        <x>1260</x>
+        <y>200</y>
+        <width>102</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Синий</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="radioButton_red">
+      <property name="geometry">
+       <rect>
+        <x>1380</x>
+        <y>200</y>
+        <width>142</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Красный</string>
+      </property>
+     </widget>
+     <widget class="QSlider" name="horizontalSlider_speed">
+      <property name="geometry">
+       <rect>
+        <x>980</x>
+        <y>140</y>
+        <width>382</width>
+        <height>44</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <number>1000</number>
+      </property>
+      <property name="singleStep">
+       <number>1</number>
+      </property>
+      <property name="pageStep">
+       <number>50</number>
+      </property>
+      <property name="value">
+       <number>500</number>
+      </property>
+      <property name="sliderPosition">
+       <number>500</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_for_horizontalSlider_speed">
+      <property name="geometry">
+       <rect>
+        <x>1380</x>
+        <y>140</y>
+        <width>102</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>16</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>5.01 сек</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit">
+      <property name="geometry">
+       <rect>
+        <x>1360</x>
+        <y>320</y>
+        <width>102</width>
+        <height>40</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QSlider" name="horizontalSlider_size">
+      <property name="geometry">
+       <rect>
+        <x>980</x>
+        <y>380</y>
+        <width>482</width>
+        <height>44</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <number>12</number>
+      </property>
+      <property name="maximum">
+       <number>96</number>
+      </property>
+      <property name="singleStep">
+       <number>2</number>
+      </property>
+      <property name="sliderPosition">
+       <number>48</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_for_horizontalSlider_size">
+      <property name="geometry">
+       <rect>
+        <x>960</x>
+        <y>420</y>
+        <width>522</width>
+        <height>142</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>24</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_num_hieroglyphs_in_show_label_2">
+      <property name="geometry">
+       <rect>
+        <x>980</x>
+        <y>320</y>
+        <width>362</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Новое Число статей в показе:</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_17">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>122</width>
+        <height>62</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>24</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>ВХОД</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="Line" name="line">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>800</y>
+        <width>1482</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_show_pinyin">
+      <property name="geometry">
+       <rect>
+        <x>1280</x>
+        <y>640</y>
+        <width>122</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Пиньин</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_show_hieroglyph">
+      <property name="geometry">
+       <rect>
+        <x>980</x>
+        <y>640</y>
+        <width>162</width>
+        <height>34</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Иероглиф</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_show_phrase">
+      <property name="geometry">
+       <rect>
+        <x>1400</x>
+        <y>640</y>
+        <width>102</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Фраза</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QCheckBox" name="checkBox_show_translation">
+      <property name="geometry">
+       <rect>
+        <x>1140</x>
+        <y>640</y>
+        <width>162</width>
+        <height>32</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Перевод</string>
+      </property>
+      <property name="checked">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_4">
+      <property name="geometry">
+       <rect>
+        <x>940</x>
+        <y>580</y>
+        <width>562</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>24</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Показать</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="Line" name="line_5">
+      <property name="geometry">
+       <rect>
+        <x>34</x>
+        <y>500</y>
+        <width>902</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>540</y>
+        <width>922</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>24</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Иная служебная информация</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_save_new_settings">
+      <property name="geometry">
+       <rect>
+        <x>980</x>
+        <y>720</y>
+        <width>322</width>
+        <height>62</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Сохранить настройки</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_current_date">
+      <property name="geometry">
+       <rect>
+        <x>192</x>
+        <y>0</y>
+        <width>162</width>
+        <height>62</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>...</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab">
+     <attribute name="title">
+      <string>ПОКАЗ</string>
+     </attribute>
+     <widget class="QLabel" name="label_phrase">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>620</y>
+        <width>1442</width>
+        <height>182</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>28</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Фраза</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="wordWrap">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_number">
+      <property name="geometry">
+       <rect>
+        <x>1380</x>
+        <y>40</y>
+        <width>102</width>
+        <height>62</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>№</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_HSK">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>40</y>
+        <width>82</width>
+        <height>62</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>HSK</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_pinyin">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>380</y>
+        <width>1442</width>
+        <height>62</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>24</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>pinyin</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_hieroglyph">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>100</y>
+        <width>1442</width>
+        <height>242</height>
+       </rect>
+      </property>
+      <property name="baseSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="font">
+       <font>
+        <family>MS Shell Dlg 2</family>
+        <pointsize>96</pointsize>
+        <weight>50</weight>
+        <italic>false</italic>
+        <bold>false</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="text">
+       <string>文字 </string>
+      </property>
+      <property name="scaledContents">
+       <bool>false</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="wordWrap">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_translation">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>500</y>
+        <width>1442</width>
+        <height>122</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>24</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Перевод</string>
+      </property>
+      <property name="scaledContents">
+       <bool>true</bool>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="wordWrap">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_end">
+      <property name="geometry">
+       <rect>
+        <x>1260</x>
+        <y>820</y>
+        <width>202</width>
+        <height>62</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Закончить показ</string>
+      </property>
+     </widget>
+     <widget class="QProgressBar" name="progressBar">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>840</y>
+        <width>942</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <number>1</number>
+      </property>
+      <property name="value">
+       <number>1</number>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_start_all">
+      <property name="geometry">
+       <rect>
+        <x>1060</x>
+        <y>820</y>
+        <width>182</width>
+        <height>62</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Старт показа</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_pause">
+      <property name="geometry">
+       <rect>
+        <x>640</x>
+        <y>0</y>
+        <width>182</width>
+        <height>62</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>ПАУЗА</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_admin">
+     <attribute name="title">
+      <string>АДМИН</string>
+     </attribute>
+     <widget class="QTableWidget" name="tableWidget_users">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>60</y>
+        <width>900</width>
+        <height>300</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_admin_refresh">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>20</y>
+        <width>220</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Посмотреть пользователей</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_admin_delete_user">
+      <property name="geometry">
+       <rect>
+        <x>940</x>
+        <y>60</y>
+        <width>200</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Удалить пользователя</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_admin_new_name">
+      <property name="geometry">
+       <rect>
+        <x>940</x>
+        <y>120</y>
+        <width>200</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="placeholderText">
+       <string>Новое имя</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="lineEdit_admin_new_password">
+      <property name="geometry">
+       <rect>
+        <x>940</x>
+        <y>170</y>
+        <width>200</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
+      <property name="placeholderText">
+       <string>Новый пароль</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_admin_update_user">
+      <property name="geometry">
+       <rect>
+        <x>940</x>
+        <y>220</y>
+        <width>200</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Изменить имя/пароль</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_admin_metrics">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>380</y>
+        <width>1100</width>
+        <height>120</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Метрики</string>
+      </property>
+     </widget>
+     <widget class="QTableWidget" name="tableWidget_custom_lists">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>520</y>
+        <width>900</width>
+        <height>200</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_admin_delete_list">
+      <property name="geometry">
+       <rect>
+        <x>940</x>
+        <y>520</y>
+        <width>200</width>
+        <height>40</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Удалить список</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1520</width>
+     <height>42</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
+   <property name="nativeMenuBar">
+    <bool>false</bool>
+   </property>
+  </widget>
+ </widget>
+ <tabstops>
+  <tabstop>checkBox_show_hieroglyph</tabstop>
+  <tabstop>checkBox_show_pinyin</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
