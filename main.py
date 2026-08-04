@@ -166,20 +166,25 @@ def apply_start_tab_layout(form, tab_w, tab_h):
         return [top + int(step * i) for i in range(count)]
 
     # --- Колонка 1 ---
-    y1 = col1_y_positions(8)
-    _place(f.label_17, c1, y1[0], col1_w - 100, 28, fh)
-    _place(f.label_current_date, c1 + col1_w - 95, y1[0], 90, 22, fs)
-    _place(f.label_enter_user_name, c1, y1[1], 70, 28, fn)
-    _place(f.lineEdit_user_name, c1 + 74, y1[1], col1_w - 74, 28)
-    _place(f.label_enter_user_password, c1, y1[2], 70, 28, fn)
-    _place(f.lineEdit_user_password, c1 + 74, y1[2], col1_w - 74, 28)
-    btn_w = max(62, (col1_w - 10) // 3)
-    _place(f.pushButton_login, c1, y1[3], btn_w, 34, fn)
-    _place(f.pushButton_sign_up, c1 + btn_w + 5, y1[3], btn_w, 34, fn)
-    _place(f.pushButton_guest, c1 + 2 * (btn_w + 5), y1[3], col1_w - 2 * (btn_w + 5), 34, fn)
-    _place(f.label_info_for_user, c1, y1[4], col1_w, 40, fn)
-    _place(f.label_user_name, c1, y1[5], col1_w, 28, fn)
-    _place(f.label_user_level, c1, y1[6], col1_w, 26, fn)
+    y = top
+    _place(f.label_17, c1, y, col1_w - 100, 28, fh)
+    _place(f.label_current_date, c1 + col1_w - 95, y, 90, 22, fs)
+    y += 34
+    _place(f.label_enter_user_name, c1, y, col1_w, 24, fn)
+    _place(f.lineEdit_user_name, c1, y + 24, col1_w, 30)
+    y += 62
+    _place(f.label_enter_user_password, c1, y, col1_w, 24, fn)
+    _place(f.lineEdit_user_password, c1, y + 24, col1_w, 30)
+    y += 62
+    btn_h = 36
+    btn_gap = 8
+    _place(f.pushButton_login, c1, y, col1_w, btn_h, fn)
+    _place(f.pushButton_sign_up, c1, y + btn_h + btn_gap, col1_w, btn_h, fn)
+    _place(f.pushButton_guest, c1, y + 2 * (btn_h + btn_gap), col1_w, btn_h, fn)
+    y += 3 * (btn_h + btn_gap) + 10
+    _place(f.label_info_for_user, c1, y, col1_w, 40, fn)
+    _place(f.label_user_name, c1, y + 44, col1_w, 28, fn)
+    _place(f.label_user_level, c1, y + 76, col1_w, 26, fn)
 
     # --- Колонка 2 ---
     y2 = col1_y_positions(12)
@@ -278,7 +283,7 @@ def apply_show_tab_layout(form, tab_w, tab_h):
     """Раскладка вкладки ПОКАЗ — карточка с иероглифом и панель управления."""
     m = 20
     top_bar_h = 48
-    bottom_h = 64
+    bottom_h = 76
     card_pad = 10
 
     pause_w = 170
@@ -289,7 +294,7 @@ def apply_show_tab_layout(form, tab_w, tab_h):
     _place(form.label_number, tab_w - m - chip_w, top_bar_h, chip_w, 34, 10)
 
     card_y = top_bar_h + 44
-    card_h = max(180, int(tab_h * 0.34))
+    card_h = max(180, int(tab_h * 0.32))
     if hasattr(form, '_show_card'):
         _place(form._show_card, m - card_pad, card_y - card_pad, tab_w - 2 * m + card_pad * 2, card_h + card_pad * 2)
 
@@ -302,17 +307,18 @@ def apply_show_tab_layout(form, tab_w, tab_h):
     gap = 10
     _place(form.label_pinyin, m, y, tab_w - 2 * m, row_h, 15)
     _place(form.label_translation, m, y + row_h + gap, tab_w - 2 * m, row_h, 14)
-    _place(form.label_phrase, m, y + 2 * (row_h + gap), tab_w - 2 * m, row_h, 12)
+    _place(form.label_phrase, m, y + 2 * (row_h + gap), tab_w - 2 * m, row_h)
 
-    by = tab_h - bottom_h + 10
-    btn_w = 130
+    by = tab_h - bottom_h + 6
+    btn_w = 150
+    btn_h = 44
     btn_gap = 12
     controls_w = btn_w * 2 + btn_gap
     prog_w = tab_w - 2 * m - controls_w - btn_gap
-    _place(form.progressBar, m, by + 10, max(200, prog_w), 24)
+    _place(form.progressBar, m, by + 6, max(280, prog_w), 32)
     bx = tab_w - m - controls_w
-    _place(form.pushButton_start_all, bx, by, btn_w, 40, 10)
-    _place(form.pushButton_end, bx + btn_w + btn_gap, by, btn_w, 40, 10)
+    _place(form.pushButton_start_all, bx, by, btn_w, btn_h, 11)
+    _place(form.pushButton_end, bx + btn_w + btn_gap, by, btn_w, btn_h, 11)
 
     _lower_panels(form)
 
@@ -390,6 +396,8 @@ class MainApp:
         QApplication.setFont(base_font)
         for label in self.window.findChildren(QLabel):
             label.setWordWrap(False)
+        for name in ('label_phrase', 'label_translation', 'label_pinyin'):
+            getattr(self.form, name).setWordWrap(True)
 
         apply_screen_layout(self.window, self.form)
         self.form.tabWidget.setTabText(0, 'СТАРТ')
@@ -412,6 +420,13 @@ class MainApp:
         self.slideshow = SlideshowController(self._on_slideshow_update, self._on_slideshow_finished)
         self.form.label_hieroglyph.setScaledContents(False)
         self.form.label_preview_hieroglyph.setScaledContents(False)
+        self.form.progressBar.setMinimum(0)
+        self.form.progressBar.setMaximum(100)
+        self.form.progressBar.setFormat('%p%')
+        self.form.progressBar.setTextVisible(True)
+        self.form.pushButton_start_all.setText('СТАРТ')
+        self.form.pushButton_end.setText('ЗАКОНЧИТЬ')
+        self.form.pushButton_pause.setText('ПАУЗА')
         self._wire_signals()
         self._setup_admin_tables()
         self._hide_admin_tab()
@@ -803,7 +818,7 @@ class MainApp:
             self.form.pushButton_pause.setText('ПАУЗА')
         elif self.slideshow.is_running:
             self.slideshow.pause()
-            self.form.pushButton_pause.setText('ПРОДОЛЖИТЬ')
+            self.form.pushButton_pause.setText('ДАЛЬШЕ')
         else:
             self._start_show()
 
@@ -822,6 +837,7 @@ class MainApp:
                 self._save_settings()
         self.form.tabWidget.setCurrentWidget(self.form.tab_2)
         self.form.progressBar.setValue(0)
+        self.form.pushButton_pause.setText('ПАУЗА')
 
     def _on_slideshow_update(self, card, progress, settings, card_index=0):
         self._display_card(card, progress, settings, card_index)
@@ -848,6 +864,10 @@ class MainApp:
         f.label_translation.setText(card.translation if settings.show_translation else '')
         f.label_phrase.setText(card.phrase if settings.show_phrase else '')
         size = max(12, int(settings.font_size * min(UI_SCALE['x'], UI_SCALE['y'])))
+        phrase_size = max(10, int(size * 0.5))
+        f.label_phrase.setFont(QFont(APP_FONT, phrase_size))
+        f.label_pinyin.setFont(QFont(APP_FONT, max(12, int(size * 0.35))))
+        f.label_translation.setFont(QFont(APP_FONT, max(12, int(size * 0.35))))
         angle = self._tilt_for_card(settings, card_index)
         if settings.show_hieroglyph:
             set_hieroglyph_label(f.label_hieroglyph, card.hieroglyph, GLYPH_FONT, size, settings.color, angle)
