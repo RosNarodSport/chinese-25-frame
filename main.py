@@ -69,6 +69,9 @@ from services.app_theme import APP_FONT, GLYPH_FONT, ERROR, SUCCESS, apply_theme
 DESIGN_TAB = (1522, 962)
 FONT_SCALE = 1.0
 UI_SCALE = {'x': 1.0, 'y': 1.0, 'font': FONT_SCALE}
+SHOW_TEXT_GAP = max(4, int(10 * 0.65))
+SHOW_CTRL_GAP1 = max(6, int(20 * 0.65))
+SHOW_CTRL_GAP2 = max(6, int(20 * 0.65))
 
 HSK_CHECKBOXES = {
     'checkBox_show_hsk1': 'HSK1',
@@ -114,6 +117,13 @@ def _create_panel_frames(form):
         panel.setObjectName('panelCard')
     form._show_card = QFrame(form.tab)
     form._show_card.setObjectName('showCard')
+    form._show_controls = QFrame(form.tab)
+    form._show_controls.setObjectName('panelCard')
+    form.label_show_controls_title = QLabel('Управление показом', form.tab)
+    form.label_show_controls_title.setObjectName('sectionTitle')
+    form.label_show_progress_pct = QLabel('0%', form.tab)
+    form.label_show_progress_pct.setObjectName('mutedLabel')
+    form.label_show_progress_pct.setAlignment(Qt.AlignCenter)
 
 
 def _lower_panels(form):
@@ -122,10 +132,19 @@ def _lower_panels(form):
         getattr(form, '_panel_col2', None),
         getattr(form, '_panel_col3', None),
         getattr(form, '_show_card', None),
+        getattr(form, '_show_controls', None),
     ):
         if panel is not None:
             panel.lower()
             panel.show()
+    title = getattr(form, 'label_show_controls_title', None)
+    if title is not None:
+        title.raise_()
+        title.show()
+    pct = getattr(form, 'label_show_progress_pct', None)
+    if pct is not None:
+        pct.raise_()
+        pct.show()
 
 
 def apply_start_tab_layout(form, tab_w, tab_h):
@@ -283,8 +302,9 @@ def apply_show_tab_layout(form, tab_w, tab_h):
     """Раскладка вкладки ПОКАЗ — карточка с иероглифом и панель управления."""
     m = 20
     top_bar_h = 48
-    bottom_h = 76
+    bottom_h = 92
     card_pad = 10
+    controls_h = 56
 
     pause_w = 170
     _place(form.pushButton_pause, (tab_w - pause_w) // 2, 12, pause_w, 40, 11)
@@ -294,31 +314,42 @@ def apply_show_tab_layout(form, tab_w, tab_h):
     _place(form.label_number, tab_w - m - chip_w, top_bar_h, chip_w, 34, 10)
 
     card_y = top_bar_h + 44
-    card_h = max(180, int(tab_h * 0.32))
+    card_h = max(180, int(tab_h * 0.30))
     if hasattr(form, '_show_card'):
         _place(form._show_card, m - card_pad, card_y - card_pad, tab_w - 2 * m + card_pad * 2, card_h + card_pad * 2)
 
     inner_m = m + 12
     _place(form.label_hieroglyph, inner_m, card_y + 8, tab_w - 2 * inner_m, card_h - 16)
 
-    y = card_y + card_h + 20
-    remaining = tab_h - y - bottom_h - 16
-    row_h = max(36, remaining // 3)
-    gap = 10
+    y = card_y + card_h + max(8, int(20 * 0.65))
+    remaining = tab_h - y - bottom_h - 8
+    row_h = max(32, remaining // 3)
     _place(form.label_pinyin, m, y, tab_w - 2 * m, row_h, 15)
-    _place(form.label_translation, m, y + row_h + gap, tab_w - 2 * m, row_h, 14)
-    _place(form.label_phrase, m, y + 2 * (row_h + gap), tab_w - 2 * m, row_h)
+    _place(form.label_translation, m, y + row_h + SHOW_TEXT_GAP, tab_w - 2 * m, row_h, 14)
+    _place(form.label_phrase, m, y + 2 * (row_h + SHOW_TEXT_GAP), tab_w - 2 * m, row_h)
 
-    by = tab_h - bottom_h + 6
-    btn_w = 150
-    btn_h = 44
-    btn_gap = 12
-    controls_w = btn_w * 2 + btn_gap
-    prog_w = tab_w - 2 * m - controls_w - btn_gap
-    _place(form.progressBar, m, by + 6, max(280, prog_w), 32)
-    bx = tab_w - m - controls_w
-    _place(form.pushButton_start_all, bx, by, btn_w, btn_h, 11)
-    _place(form.pushButton_end, bx + btn_w + btn_gap, by, btn_w, btn_h, 11)
+    panel_y = tab_h - bottom_h + 4
+    if hasattr(form, '_show_controls'):
+        _place(form._show_controls, m - 8, panel_y, tab_w - 2 * m + 16, bottom_h - 8)
+
+    _place(form.label_show_controls_title, m, panel_y + 6, 220, 22, 11)
+
+    row_y = panel_y + 30
+    btn_h = 40
+    btn_end_w = 158
+    btn_start_w = 132
+    pct_w = 46
+    bar_pct_gap = 8
+
+    end_x = tab_w - m - btn_end_w
+    start_x = end_x - SHOW_CTRL_GAP2 - btn_start_w
+    pct_x = start_x - SHOW_CTRL_GAP1 - pct_w
+    prog_w = max(200, pct_x - m - bar_pct_gap)
+
+    _place(form.progressBar, m, row_y + 4, prog_w, 28)
+    _place(form.label_show_progress_pct, pct_x, row_y + 4, pct_w, 28, 11)
+    _place(form.pushButton_start_all, start_x, row_y, btn_start_w, btn_h, 10)
+    _place(form.pushButton_end, end_x, row_y, btn_end_w, btn_h, 10)
 
     _lower_panels(form)
 
@@ -422,10 +453,10 @@ class MainApp:
         self.form.label_preview_hieroglyph.setScaledContents(False)
         self.form.progressBar.setMinimum(0)
         self.form.progressBar.setMaximum(100)
-        self.form.progressBar.setFormat('%p%')
-        self.form.progressBar.setTextVisible(True)
-        self.form.pushButton_start_all.setText('СТАРТ')
-        self.form.pushButton_end.setText('ЗАКОНЧИТЬ')
+        self.form.progressBar.setFormat('')
+        self.form.progressBar.setTextVisible(False)
+        self.form.pushButton_start_all.setText('Старт показа')
+        self.form.pushButton_end.setText('Закончить показ')
         self.form.pushButton_pause.setText('ПАУЗА')
         self._wire_signals()
         self._setup_admin_tables()
@@ -837,6 +868,8 @@ class MainApp:
                 self._save_settings()
         self.form.tabWidget.setCurrentWidget(self.form.tab_2)
         self.form.progressBar.setValue(0)
+        if hasattr(self.form, 'label_show_progress_pct'):
+            self.form.label_show_progress_pct.setText('0%')
         self.form.pushButton_pause.setText('ПАУЗА')
 
     def _on_slideshow_update(self, card, progress, settings, card_index=0):
@@ -874,6 +907,8 @@ class MainApp:
         else:
             set_hieroglyph_label(f.label_hieroglyph, '', GLYPH_FONT, size, settings.color, 0)
         f.progressBar.setValue(max(0, min(100, progress)))
+        if hasattr(f, 'label_show_progress_pct'):
+            f.label_show_progress_pct.setText(f'{max(0, min(100, progress))}%')
 
     def _load_excel(self):
         if not self.session.user_id:
