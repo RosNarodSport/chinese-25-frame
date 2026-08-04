@@ -1354,7 +1354,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Закончить показ</string>
+       <string>ЗАКОНЧИТЬ</string>
       </property>
      </widget>
      <widget class="QProgressBar" name="progressBar">
@@ -1383,7 +1383,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Старт показа</string>
+       <string>СТАРТ</string>
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_pause">
