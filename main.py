@@ -298,44 +298,54 @@ def apply_start_tab_layout(form, tab_w, tab_h):
     _lower_panels(f)
 
 
+def _tab_page_height(form, client_h: int) -> int:
+    bar = form.tabWidget.tabBar()
+    bar_h = bar.height() if bar and bar.isVisible() else 0
+    return max(1, client_h - bar_h)
+
+
 def apply_show_tab_layout(form, tab_w, tab_h):
-    """Раскладка вкладки ПОКАЗ — карточка с иероглифом и панель управления."""
+    """Раскладка вкладки ПОКАЗ — всё умещается, управление показом закреплено внизу."""
     m = 20
-    top_bar_h = 48
-    bottom_h = 92
+    bottom_h = 84
     card_pad = 10
-    controls_h = 56
+
+    panel_y = tab_h - bottom_h
 
     pause_w = 170
-    _place(form.pushButton_pause, (tab_w - pause_w) // 2, 12, pause_w, 40, 11)
+    _place(form.pushButton_pause, (tab_w - pause_w) // 2, 8, pause_w, 36, 11)
 
+    chip_y = 50
     chip_w = 90
-    _place(form.label_HSK, m, top_bar_h, chip_w, 34, 10)
-    _place(form.label_number, tab_w - m - chip_w, top_bar_h, chip_w, 34, 10)
+    _place(form.label_HSK, m, chip_y, chip_w, 30, 10)
+    _place(form.label_number, tab_w - m - chip_w, chip_y, chip_w, 30, 10)
 
-    card_y = top_bar_h + 44
-    card_h = max(180, int(tab_h * 0.30))
+    card_y = chip_y + 36
+    text_bottom = panel_y - 6
+    card_h_max = 200
+    card_h_min = 100
+    card_h = max(card_h_min, min(card_h_max, int((text_bottom - card_y) * 0.42)))
+
     if hasattr(form, '_show_card'):
         _place(form._show_card, m - card_pad, card_y - card_pad, tab_w - 2 * m + card_pad * 2, card_h + card_pad * 2)
 
     inner_m = m + 12
-    _place(form.label_hieroglyph, inner_m, card_y + 8, tab_w - 2 * inner_m, card_h - 16)
+    _place(form.label_hieroglyph, inner_m, card_y + 6, tab_w - 2 * inner_m, card_h - 12)
 
-    y = card_y + card_h + max(8, int(20 * 0.65))
-    remaining = tab_h - y - bottom_h - 8
-    row_h = max(32, remaining // 3)
-    _place(form.label_pinyin, m, y, tab_w - 2 * m, row_h, 15)
-    _place(form.label_translation, m, y + row_h + SHOW_TEXT_GAP, tab_w - 2 * m, row_h, 14)
-    _place(form.label_phrase, m, y + 2 * (row_h + SHOW_TEXT_GAP), tab_w - 2 * m, row_h)
+    y = card_y + card_h + max(6, int(20 * 0.65))
+    text_available = max(60, text_bottom - y)
+    row_h = max(22, (text_available - 2 * SHOW_TEXT_GAP) // 3)
+    _place(form.label_pinyin, m, y, tab_w - 2 * m, row_h, 14)
+    _place(form.label_translation, m, y + row_h + SHOW_TEXT_GAP, tab_w - 2 * m, row_h, 13)
+    _place(form.label_phrase, m, y + 2 * (row_h + SHOW_TEXT_GAP), tab_w - 2 * m, min(row_h, text_bottom - y - 2 * (row_h + SHOW_TEXT_GAP)))
 
-    panel_y = tab_h - bottom_h + 4
     if hasattr(form, '_show_controls'):
-        _place(form._show_controls, m - 8, panel_y, tab_w - 2 * m + 16, bottom_h - 8)
+        _place(form._show_controls, m - 8, panel_y, tab_w - 2 * m + 16, bottom_h)
 
-    _place(form.label_show_controls_title, m, panel_y + 6, 220, 22, 11)
+    _place(form.label_show_controls_title, m, panel_y + 4, 220, 20, 10)
 
-    row_y = panel_y + 30
-    btn_h = 40
+    row_y = panel_y + 26
+    btn_h = 36
     btn_end_w = 158
     btn_start_w = 132
     pct_w = 46
@@ -344,14 +354,29 @@ def apply_show_tab_layout(form, tab_w, tab_h):
     end_x = tab_w - m - btn_end_w
     start_x = end_x - SHOW_CTRL_GAP2 - btn_start_w
     pct_x = start_x - SHOW_CTRL_GAP1 - pct_w
-    prog_w = max(200, pct_x - m - bar_pct_gap)
+    prog_w = max(160, pct_x - m - bar_pct_gap)
 
-    _place(form.progressBar, m, row_y + 4, prog_w, 28)
-    _place(form.label_show_progress_pct, pct_x, row_y + 4, pct_w, 28, 11)
+    _place(form.progressBar, m, row_y + 2, prog_w, 24)
+    _place(form.label_show_progress_pct, pct_x, row_y + 2, pct_w, 24, 10)
     _place(form.pushButton_start_all, start_x, row_y, btn_start_w, btn_h, 10)
     _place(form.pushButton_end, end_x, row_y, btn_end_w, btn_h, 10)
 
     _lower_panels(form)
+    for widget in (
+        form.label_show_controls_title,
+        form.progressBar,
+        form.label_show_progress_pct,
+        form.pushButton_start_all,
+        form.pushButton_end,
+        form.pushButton_pause,
+        form.label_HSK,
+        form.label_number,
+        form.label_hieroglyph,
+        form.label_pinyin,
+        form.label_translation,
+        form.label_phrase,
+    ):
+        widget.raise_()
 
 
 def relayout_window(window, form, scale_other_tabs=False):
@@ -363,8 +388,9 @@ def relayout_window(window, form, scale_other_tabs=False):
     UI_SCALE['x'] = tab_scale_x
     UI_SCALE['y'] = tab_scale_y
     form.tabWidget.setGeometry(0, 0, client_w, client_h)
-    apply_start_tab_layout(form, client_w, client_h)
-    apply_show_tab_layout(form, client_w, client_h)
+    page_h = _tab_page_height(form, client_h)
+    apply_start_tab_layout(form, client_w, page_h)
+    apply_show_tab_layout(form, client_w, page_h)
     if scale_other_tabs:
         for tab_name in ('tab_admin',):
             tab = getattr(form, tab_name, None)
