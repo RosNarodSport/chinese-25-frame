@@ -39,6 +39,7 @@ from PyQt5.QtWidgets import (
     QLabel,
     QLineEdit,
     QMessageBox,
+    QPushButton,
     QRadioButton,
     QTableWidgetItem,
     QVBoxLayout,
@@ -77,6 +78,12 @@ from services.metronome import METRONOME_RATES, MetronomeController
 DESIGN_TAB = (1522, 962)
 FONT_SCALE = 1.0
 UI_SCALE = {'x': 1.0, 'y': 1.0, 'font': FONT_SCALE}
+SHOW_TEXT_GAP = max(3, int(10 * 0.65))
+SHOW_AFTER_CARD_GAP = max(4, int(20 * 0.65))
+SHOW_CTRL_TOP_GAP = max(2, int(6 * 0.65))
+SHOW_CTRL_LIFT = 0.35
+SHOW_CTRL_GAP1 = max(6, int(20 * 0.65))
+SHOW_CTRL_GAP2 = max(6, int(20 * 0.65))
 
 HSK_CHECKBOXES = {
     'checkBox_show_hsk1': 'HSK1',
@@ -91,6 +98,13 @@ COLOR_RADIO = {
     'radioButton_blue': '#0000FF',
     'radioButton_red': '#FF0000',
 }
+
+COLOR_RADIO_ORDER = (
+    'radioButton_black',
+    'radioButton_green',
+    'radioButton_red',
+    'radioButton_blue',
+)
 
 
 def resource_path(relative_path: str) -> str:
@@ -135,8 +149,98 @@ def _create_panel_frames(form):
     form._panel_col3 = QFrame(form.tab_2)
     for panel in (form._panel_col1, form._panel_col2, form._panel_col3):
         panel.setObjectName('panelCard')
+    _create_start_tab_extras(form)
     form._show_card = QFrame(form.tab)
     form._show_card.setObjectName('showCard')
+    form._show_controls = QFrame(form.tab)
+    form._show_controls.setObjectName('panelCard')
+    form.label_show_controls_title = QLabel('Управление показом', form.tab)
+    form.label_show_controls_title.setObjectName('sectionTitle')
+    form.label_show_progress_pct = QLabel('0%', form.tab)
+    form.label_show_progress_pct.setObjectName('mutedLabel')
+    form.label_show_progress_pct.setAlignment(Qt.AlignCenter)
+
+
+def _create_start_tab_extras(form):
+    tab = form.tab_2
+    extras = {
+        'label_about_title': 'Изучение китайского языка методом 25 кадра',
+        'label_col3_hsk': 'Выбрать HSK',
+        'label_col3_color': 'Выбор цвета',
+        'label_col3_speed': 'Скорость',
+        'label_col3_show': 'Показ',
+        'label_col3_tilt': 'Угол наклона',
+        'label_col3_size': 'Размер иероглифа',
+        'label_preset_name_title': 'Имя',
+        'label_tilt_show_label': 'Угол поворота:',
+        'label_tilt_show': '...',
+    }
+    for name, text in extras.items():
+        if not hasattr(form, name):
+            label = QLabel(text, tab)
+            setattr(form, name, label)
+        else:
+            getattr(form, name).setText(text)
+
+    if not hasattr(form, 'pushButton_metronome'):
+        form.pushButton_metronome = QPushButton('Метроном', tab)
+    if not hasattr(form, 'pushButton_timer'):
+        form.pushButton_timer = QPushButton('Таймер', tab)
+
+
+def _apply_start_tab_texts(form):
+    form.label_17.setText('Добро пожаловать!')
+    form.label_16.setText('Предыдущие настройки')
+    form.label_enter_user_name.setText('Имя')
+    form.label_enter_user_password.setText('Пароль')
+    form.pushButton_login.setText('ВОЙТИ')
+    form.pushButton_sign_up.setText('Зарегистрироваться')
+    form.pushButton_guest.setText('Войти как Гость')
+    form.label_hsk_group_label.setText('Список слов:')
+    form.label_speed_show_label.setText('Время задержки при показе:')
+    form.label_label_color_scheme_label.setText('Выбран цвет:')
+    form.label_num_hieroglyphs_in_show_label.setText('Число статей к показе:')
+    form.label_hieroglyph_size_label.setText('Размер шрифта:')
+    form.pushButton_launch.setText('Включить показ иероглифов')
+    form.pushButton_load_excel.setText('Ваш список')
+    form.pushButton_template.setText('Шаблон')
+    form.checkBox_shuffle.setText('Перемешать')
+    form.pushButton_preset_delete.setText('x')
+    form.pushButton_preset_rename.setText('y')
+    form.pushButton_save_new_settings.setText('Сохранить настройки')
+    form.label_info_for_user.setText('Приветственный текст и о программе')
+    form.label_info_for_user.setWordWrap(True)
+    form.radioButton_black.setText('Черный')
+    form.radioButton_green.setText('Зеленый')
+    form.radioButton_red.setText('Красный')
+    form.radioButton_blue.setText('Синий')
+    form.label_17.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+    form.label_16.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+    form.label_about_title.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+    form.label_26.hide()
+
+
+def _hide_start_legacy_widgets(form):
+    for name in (
+        'label_26',
+        'label_4',
+        'label',
+        'label_history_title',
+        'label_login_count',
+        'label_user_name',
+        'label_user_level',
+        'label_current_date',
+        'label_show_new_start_point_label',
+        'label_show_new_start_point_2',
+        'horizontalSlider_show_new_start_point',
+        'label_check_new_start_point',
+        'label_name_of_show_complect_label',
+        'label_name_of_show_complect',
+        'label_num_hieroglyphs_in_show_label_2',
+    ):
+        widget = getattr(form, name, None)
+        if widget is not None:
+            widget.hide()
 
 
 def _lower_panels(form):
@@ -145,10 +249,19 @@ def _lower_panels(form):
         getattr(form, '_panel_col2', None),
         getattr(form, '_panel_col3', None),
         getattr(form, '_show_card', None),
+        getattr(form, '_show_controls', None),
     ):
         if panel is not None:
             panel.lower()
             panel.show()
+    title = getattr(form, 'label_show_controls_title', None)
+    if title is not None:
+        title.raise_()
+        title.show()
+    pct = getattr(form, 'label_show_progress_pct', None)
+    if pct is not None:
+        pct.raise_()
+        pct.show()
 
 
 def _hide_decorative_lines(form):
@@ -247,11 +360,292 @@ def apply_ui_scaled_layout(form, client_w, client_h):
 
 
 def apply_start_tab_layout(form, tab_w, tab_h):
-    apply_ui_scaled_layout(form, tab_w, tab_h)
+    """Раскладка вкладки СТАРТ по схеме: вход | предыдущие настройки | конфигурация."""
+    m = 12
+    bottom_h = 40
+    top = 10
+    content_h = tab_h - bottom_h - top
+    card_pad = 6
+    gap = 8
+
+    col1_w = int(tab_w * 0.30)
+    col2_w = int(tab_w * 0.34)
+    col3_w = tab_w - col1_w - col2_w - 4 * m
+
+    c1 = m
+    c2 = c1 + col1_w + m
+    c3 = c2 + col2_w + m
+
+    fh, fn, fs = 12, 10, 9
+    f = form
+
+    if hasattr(f, '_panel_col1'):
+        _place(f._panel_col1, c1 - card_pad, top - card_pad, col1_w + card_pad * 2, content_h + card_pad * 2)
+        _place(f._panel_col2, c2 - card_pad, top - card_pad, col2_w + card_pad * 2, content_h + card_pad * 2)
+        _place(f._panel_col3, c3 - card_pad, top - card_pad, col3_w + card_pad * 2, content_h + card_pad * 2)
+
+    f.line.hide()
+    f.line_3.hide()
+    f.line_4.hide()
+    f.line_5.hide()
+    _hide_start_legacy_widgets(f)
+
+    # --- Колонка 1: вход ---
+    y = top
+    _place(f.label_17, c1, y, col1_w, 24, fh)
+    y += 28
+
+    field_h = 26
+    _place(f.label_enter_user_name, c1, y, 52, field_h, fn)
+    _place(f.lineEdit_user_name, c1 + 56, y, col1_w - 56, field_h)
+    y += field_h + gap
+    _place(f.label_enter_user_password, c1, y, 52, field_h, fn)
+    _place(f.lineEdit_user_password, c1 + 56, y, col1_w - 56, field_h)
+    y += field_h + gap + 2
+
+    login_h = 34
+    login_w = int(col1_w * 0.46)
+    side_w = col1_w - login_w - gap
+    _place(f.pushButton_login, c1, y, login_w, login_h * 2 + gap, fn)
+    _place(f.pushButton_sign_up, c1 + login_w + gap, y, side_w, login_h, fn)
+    _place(f.pushButton_guest, c1 + login_w + gap, y + login_h + gap, side_w, login_h, fn)
+    y += login_h * 2 + gap + 12
+
+    _place(f.label_about_title, c1, y, col1_w, 22, fn)
+    y += 26
+    about_h = max(80, tab_h - bottom_h - y - 8)
+    _place(f.label_info_for_user, c1, y, col1_w, about_h, fs)
+
+    # --- Колонка 2: предыдущие настройки ---
+    y2 = top
+    _place(f.label_16, c2, y2, col2_w, 24, fh)
+    y2 += 30
+
+    label_w = int(col2_w * 0.52)
+    val_w = col2_w - label_w - 4
+    val_x = c2 + label_w + 4
+    row_h = 26
+    summary_rows = [
+        (f.label_hsk_group_label, f.label_hsk_group),
+        (f.label_speed_show_label, f.label_speed_show),
+        (f.label_label_color_scheme_label, f.label_color_scheme),
+        (f.label_tilt_show_label, f.label_tilt_show),
+        (f.label_num_hieroglyphs_in_show_label, f.label_num_hieroglyphs_in_show),
+        (f.label_hieroglyph_size_label, f.label_hieroglyph_size),
+    ]
+    for lbl, val in summary_rows:
+        _place(lbl, c2, y2, label_w, row_h, fn)
+        _place(val, val_x, y2, val_w, row_h, fn)
+        y2 += row_h + 4
+
+    y2 += 8
+    preset_h = 28
+    icon_w = 28
+    combo_w = col2_w - 52 - icon_w * 2 - 8
+    _place(f.label_preset_name_title, c2, y2, 46, preset_h, fn)
+    _place(f.comboBox_presets, c2 + 50, y2, combo_w, preset_h)
+    _place(f.pushButton_preset_delete, c2 + 50 + combo_w + 4, y2, icon_w, preset_h, fn)
+    _place(f.pushButton_preset_rename, c2 + 50 + combo_w + icon_w + 8, y2, icon_w, preset_h, fn)
+
+    launch_h = 38
+    _place(f.pushButton_launch, c2, tab_h - bottom_h - launch_h - 10, col2_w, launch_h, fn)
+
+    # --- Колонка 3: конфигурация ---
+    grid_top = top + 4
+    side_btn_w = max(92, int(col3_w * 0.22))
+    grid_w = col3_w - side_btn_w - gap
+    grid_col_w = grid_w // 4
+    row_h = 22
+
+    headers = (
+        f.label_col3_hsk,
+        f.label_col3_color,
+        f.label_col3_speed,
+        f.label_col3_show,
+    )
+    for i, header in enumerate(headers):
+        _place(header, c3 + i * grid_col_w, grid_top, grid_col_w - 2, 20, fs)
+
+    grid_y = grid_top + 24
+    hsk_names = list(HSK_CHECKBOXES.keys())
+    color_names = list(COLOR_RADIO_ORDER)
+    show_names = (
+        'checkBox_show_hieroglyph',
+        'checkBox_show_pinyin',
+        'checkBox_show_translation',
+        'checkBox_show_phrase',
+    )
+    show_labels = ('Иероглиф', 'Пиньинь', 'Перевод', 'Фраза')
+    for row in range(4):
+        y_row = grid_y + row * (row_h + 4)
+        _place(getattr(f, hsk_names[row]), c3, y_row, grid_col_w - 2, row_h, fn)
+        _place(getattr(f, color_names[row]), c3 + grid_col_w, y_row, grid_col_w - 2, row_h, fn)
+        cb = getattr(f, show_names[row])
+        cb.setText(show_labels[row])
+        _place(cb, c3 + grid_col_w * 3, y_row, grid_col_w - 2, row_h, fn)
+
+    speed_x = c3 + grid_col_w * 2
+    f.horizontalSlider_speed.setOrientation(Qt.Vertical)
+    _place(f.horizontalSlider_speed, speed_x + 8, grid_y, 22, row_h * 4 + 12)
+    _place(f.label_for_horizontalSlider_speed, speed_x, grid_y + row_h * 4 + 16, grid_col_w - 4, 18, fs)
+
+    lower_y = grid_y + row_h * 4 + 44
+    preview_w = int(grid_w * 0.42)
+    tilt_w = int(grid_w * 0.22)
+    btn_x = c3 + grid_w + gap
+
+    _place(f.label_col3_tilt, c3, lower_y, tilt_w, 20, fs)
+    _place(f.horizontalSlider_tilt, c3, lower_y + 22, tilt_w, 22)
+    _place(f.label_tilt_value, c3, lower_y + 46, tilt_w, 18, fs)
+
+    preview_x = c3 + tilt_w + gap
+    _place(f.label_col3_size, preview_x, lower_y, preview_w, 20, fs)
+    preview_h = max(70, tab_h - bottom_h - lower_y - 78)
+    _place(f.label_preview_hieroglyph, preview_x, lower_y + 22, preview_w, preview_h - 26)
+    _place(f.horizontalSlider_size, preview_x, lower_y + preview_h - 2, preview_w - 36, 22)
+    _place(f.label_for_horizontalSlider_size, preview_x + preview_w - 34, lower_y + preview_h - 2, 34, 22, fs)
+
+    f.lineEdit.hide()
+    btn_h = 30
+    btn_stack = (
+        f.pushButton_load_excel,
+        f.pushButton_template,
+        f.checkBox_shuffle,
+        f.pushButton_metronome,
+        f.pushButton_timer,
+    )
+    for i, widget in enumerate(btn_stack):
+        _place(widget, btn_x, lower_y + i * (btn_h + 4), side_btn_w, btn_h, fn)
+
+    save_h = 32
+    _place(f.pushButton_save_new_settings, c3, tab_h - bottom_h - save_h - 6, col3_w, save_h, fn)
+
+    # --- Нижняя строка ---
+    by = tab_h - bottom_h + 6
+    _place(f.pushButton_exit, m, by, 90, 28, fn)
+    _place(f.label_last_date_label, m + 96, by, 150, 26, fs)
+    _place(f.label_last_date, m + 248, by, 90, 26, fs)
+    _place(f.label_work_time_total_label, m + 344, by, 110, 26, fs)
+    _place(f.label_work_time_total, m + 456, by, 80, 26, fs)
+
+    _lower_panels(f)
+    for widget in (
+        f.label_17,
+        f.label_16,
+        f.label_about_title,
+        f.label_info_for_user,
+        f.label_col3_hsk,
+        f.label_col3_color,
+        f.label_col3_speed,
+        f.label_col3_show,
+        f.label_col3_tilt,
+        f.label_col3_size,
+        f.label_preset_name_title,
+        f.label_tilt_show_label,
+        f.label_tilt_show,
+    ):
+        widget.raise_()
+
+
+def _html_escape(text: str) -> str:
+    return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
+
+
+def _format_phrase_text(phrase: str, hieroglyph: str, color: str) -> str:
+    if not phrase:
+        return ''
+    if not hieroglyph:
+        return _html_escape(phrase)
+    hiero_chars = set(hieroglyph)
+    parts = []
+    for ch in phrase:
+        esc = _html_escape(ch)
+        if ch in hiero_chars:
+            parts.append(f"<span style='color:{color};'>{esc}</span>")
+        else:
+            parts.append(esc)
+    return ''.join(parts)
+
+
+def _tab_page_height(form, client_h: int) -> int:
+    bar = form.tabWidget.tabBar()
+    bar_h = bar.height() if bar and bar.isVisible() else 0
+    return max(1, client_h - bar_h)
 
 
 def apply_show_tab_layout(form, tab_w, tab_h):
-    pass
+    """Раскладка вкладки ПОКАЗ — всё умещается, управление показом закреплено внизу."""
+    m = 20
+    bottom_h = 78
+    card_pad = 10
+
+    panel_y = tab_h - bottom_h - max(8, int(bottom_h * SHOW_CTRL_LIFT))
+
+    pause_w = 170
+    _place(form.pushButton_pause, (tab_w - pause_w) // 2, 8, pause_w, 36, 11)
+
+    chip_y = 48
+    chip_w = 90
+    _place(form.label_HSK, m, chip_y, chip_w, 28, 10)
+    _place(form.label_number, tab_w - m - chip_w, chip_y, chip_w, 28, 10)
+
+    card_y = chip_y + 32
+    text_bottom = panel_y - SHOW_CTRL_TOP_GAP
+    card_h_max = 175
+    card_h_min = 95
+    card_h = max(card_h_min, min(card_h_max, int((text_bottom - card_y) * 0.40)))
+
+    if hasattr(form, '_show_card'):
+        _place(form._show_card, m - card_pad, card_y - card_pad, tab_w - 2 * m + card_pad * 2, card_h + card_pad * 2)
+
+    inner_m = m + 12
+    _place(form.label_hieroglyph, inner_m, card_y + 6, tab_w - 2 * inner_m, card_h - 12)
+
+    y = card_y + card_h + SHOW_AFTER_CARD_GAP
+    text_available = max(54, text_bottom - y)
+    row_h = max(20, (text_available - 2 * SHOW_TEXT_GAP) // 3)
+    _place(form.label_pinyin, m, y, tab_w - 2 * m, row_h)
+    _place(form.label_translation, m, y + row_h + SHOW_TEXT_GAP, tab_w - 2 * m, row_h)
+    _place(form.label_phrase, m, y + 2 * (row_h + SHOW_TEXT_GAP), tab_w - 2 * m, min(row_h, text_bottom - y - 2 * (row_h + SHOW_TEXT_GAP)))
+
+    if hasattr(form, '_show_controls'):
+        _place(form._show_controls, m - 8, panel_y, tab_w - 2 * m + 16, bottom_h)
+
+    _place(form.label_show_controls_title, m, panel_y + 4, 220, 20, 10)
+
+    row_y = panel_y + 24
+    btn_h = 36
+    btn_end_w = 118
+    btn_start_w = 96
+    pct_w = 46
+    bar_pct_gap = 8
+
+    end_x = tab_w - m - btn_end_w
+    start_x = end_x - SHOW_CTRL_GAP2 - btn_start_w
+    pct_x = start_x - SHOW_CTRL_GAP1 - pct_w
+    prog_w = max(160, pct_x - m - bar_pct_gap)
+
+    _place(form.progressBar, m, row_y + 2, prog_w, 24)
+    _place(form.label_show_progress_pct, pct_x, row_y + 2, pct_w, 24, 10)
+    _place(form.pushButton_start_all, start_x, row_y, btn_start_w, btn_h, 10)
+    _place(form.pushButton_end, end_x, row_y, btn_end_w, btn_h, 10)
+
+    _lower_panels(form)
+    for widget in (
+        form.label_show_controls_title,
+        form.progressBar,
+        form.label_show_progress_pct,
+        form.pushButton_start_all,
+        form.pushButton_end,
+        form.pushButton_pause,
+        form.label_HSK,
+        form.label_number,
+        form.label_hieroglyph,
+        form.label_pinyin,
+        form.label_translation,
+        form.label_phrase,
+    ):
+        widget.raise_()
 
 
 def relayout_window(window, form, scale_other_tabs=False):
@@ -262,7 +656,9 @@ def relayout_window(window, form, scale_other_tabs=False):
     UI_SCALE['x'] = tab_scale_x
     UI_SCALE['y'] = tab_scale_y
     form.tabWidget.setGeometry(0, 0, client_w, client_h)
-    apply_ui_scaled_layout(form, client_w, client_h)
+    page_h = _tab_page_height(form, client_h)
+    apply_start_tab_layout(form, client_w, page_h)
+    apply_show_tab_layout(form, client_w, page_h)
     if scale_other_tabs:
         for tab_name in ('tab_admin',):
             tab = getattr(form, tab_name, None)
@@ -405,13 +801,18 @@ class MainApp:
 
         _create_panel_frames(self.form)
         apply_theme(self.app, self.form)
+        _apply_start_tab_texts(self.form)
 
         base_font = QFont(APP_FONT, 10)
         QApplication.setFont(base_font)
         for label in self.window.findChildren(QLabel):
             label.setWordWrap(False)
+        for name in ('label_phrase', 'label_translation', 'label_pinyin'):
+            label = getattr(self.form, name)
+            label.setWordWrap(True)
+            label.setAlignment(Qt.AlignCenter)
+        self.form.label_phrase.setTextFormat(Qt.RichText)
 
-        apply_screen_layout(self.window, self.form)
         self.form.tabWidget.setTabText(0, 'СТАРТ')
         self.form.tabWidget.setTabText(1, 'ПОКАЗ')
         self._admin_tab_index = -1
@@ -436,12 +837,22 @@ class MainApp:
         self._metronome_timer.timeout.connect(self._metronome_timer_tick)
         self.form.label_hieroglyph.setScaledContents(False)
         self.form.label_preview_hieroglyph.setScaledContents(False)
+        self.form.progressBar.setMinimum(0)
+        self.form.progressBar.setMaximum(100)
+        self.form.progressBar.setFormat('')
+        self.form.progressBar.setTextVisible(False)
+        self.form.pushButton_start_all.setText('СТАРТ')
+        self.form.pushButton_end.setText('ЗАКОНЧИТЬ')
+        self.form.pushButton_pause.setText('ПАУЗА')
+        self.form.horizontalSlider_speed.setOrientation(Qt.Vertical)
         self._wire_signals()
         self._setup_admin_tables()
         self._hide_admin_tab()
         self._reset_profile_labels()
         self._load_settings_to_form(self.current_settings)
         self._update_preview()
+
+        apply_screen_layout(self.window, self.form)
 
         self.window.setWindowTitle('25-й кадр. Китайский язык')
         self.window.resizeEvent = self._window_resize_event
@@ -505,6 +916,7 @@ class MainApp:
         f.pushButton_admin_delete_user.clicked.connect(self._admin_delete_user)
         f.pushButton_admin_update_user.clicked.connect(self._admin_update_user)
         f.pushButton_admin_delete_list.clicked.connect(self._admin_delete_list)
+        f.pushButton_timer.clicked.connect(self._show_timer)
         f.tabWidget.currentChanged.connect(self._tab_changed)
         self.window.closeEvent = self._close_event
 
@@ -805,8 +1217,9 @@ class MainApp:
         self.form.label_color_scheme.setText(
             f"<span style='color:{s.color}'>{color_label}</span>"
         )
-        self.form.label_show_new_start_point_2.setText(f'С номера -> {s.start_no}')
-        self.form.label_num_hieroglyphs_in_show.setText(f'Показ по {s.article_count} шт.')
+        if hasattr(self.form, 'label_tilt_show'):
+            self.form.label_tilt_show.setText(f'{s.tilt_degrees}°')
+        self.form.label_num_hieroglyphs_in_show.setText(str(s.article_count))
         self.form.label_hieroglyph_size.setText(str(s.font_size))
         preset_label = _optional_widget(self.form, 'label_name_of_show_complect')
         if preset_label:
@@ -814,11 +1227,11 @@ class MainApp:
         if self.session.user_id:
             self.form.label_last_date.setText(self.session.last_date or '...')
             self.form.label_work_time_total.setText(f'{self.session.work_time_total:.0f} сек')
-        self.form.label_user_level.setText('Гость' if self.session.is_guest else self.session.user_name)
 
     def _speed_changed(self):
         delay_sec = slider_to_delay(self.form.horizontalSlider_speed.value())
         self.form.label_for_horizontalSlider_speed.setText(f'{delay_sec:.2f} сек')
+        self.form.label_speed_show.setText(f'{delay_sec:.2f} сек')
         self._mark_dirty()
         self._update_preview()
 
@@ -830,6 +1243,8 @@ class MainApp:
     def _tilt_changed(self):
         val = self.form.horizontalSlider_tilt.value()
         self.form.label_tilt_value.setText(f'{val}°')
+        if hasattr(self.form, 'label_tilt_show'):
+            self.form.label_tilt_show.setText(f'{val}°')
         self._mark_dirty()
         self._update_preview()
 
@@ -901,7 +1316,7 @@ class MainApp:
             self.form.pushButton_pause.setText('ПАУЗА')
         elif self.slideshow.is_running:
             self.slideshow.pause()
-            self.form.pushButton_pause.setText('ПРОДОЛЖИТЬ')
+            self.form.pushButton_pause.setText('ДАЛЬШЕ')
         else:
             self._start_show()
             return
@@ -923,6 +1338,9 @@ class MainApp:
         self.form.tabWidget.setCurrentWidget(self.form.tab_2)
         self.form.progressBar.setValue(0)
         self._sync_metronome_timer()
+        if hasattr(self.form, 'label_show_progress_pct'):
+            self.form.label_show_progress_pct.setText('0%')
+        self.form.pushButton_pause.setText('ПАУЗА')
 
     def _on_slideshow_update(self, card, progress, settings, card_index=0):
         self._display_card(card, progress, settings, card_index)
@@ -946,24 +1364,35 @@ class MainApp:
         f = self.form
         f.label_HSK.setText(settings.word_source_label)
         f.label_number.setText(str(card.number))
-        pinyin_text = card.pinyin if settings.show_pinyin else ''
-        translation_text = card.translation if settings.show_translation else ''
-        phrase_text = card.phrase if settings.show_phrase else ''
-        f.label_pinyin.setText(pinyin_text)
-        f.label_translation.setText(translation_text)
-        f.label_phrase.setText(phrase_text)
-        self._fit_show_label_font(f.label_HSK, settings.word_source_label, 14)
-        self._fit_show_label_font(f.label_number, str(card.number), 12)
-        self._fit_show_label_font(f.label_pinyin, pinyin_text, 24)
-        self._fit_show_label_font(f.label_translation, translation_text, 24)
-        self._fit_show_label_font(f.label_phrase, phrase_text, 28)
+        f.label_pinyin.setText(card.pinyin if settings.show_pinyin else '')
+        f.label_translation.setText(card.translation if settings.show_translation else '')
         size = max(12, int(settings.font_size * min(UI_SCALE['x'], UI_SCALE['y'])))
+        pinyin_size = max(10, int(size * 0.70))
+        translation_size = max(10, int(size * 0.60))
+        phrase_size = max(10, int(size * 0.60))
+        f.label_pinyin.setFont(QFont(APP_FONT, pinyin_size))
+        f.label_translation.setFont(QFont(APP_FONT, translation_size))
+        f.label_phrase.setFont(QFont(APP_FONT, phrase_size))
+        if settings.show_phrase and card.phrase:
+            f.label_phrase.setText(_format_phrase_text(card.phrase, card.hieroglyph, settings.color))
+        else:
+            f.label_phrase.setText('')
         angle = self._tilt_for_card(settings, card_index)
         if settings.show_hieroglyph:
             set_hieroglyph_label(f.label_hieroglyph, card.hieroglyph, GLYPH_FONT, size, settings.color, angle)
         else:
             set_hieroglyph_label(f.label_hieroglyph, '', GLYPH_FONT, size, settings.color, 0)
         f.progressBar.setValue(max(0, min(100, progress)))
+        if hasattr(f, 'label_show_progress_pct'):
+            f.label_show_progress_pct.setText(f'{max(0, min(100, progress))}%')
+
+    def _show_timer(self):
+        total = self.session.work_time_total if self.session.user_id else 0
+        QMessageBox.information(
+            self.window,
+            'Таймер',
+            f'Время работы за текущую сессию: {total:.0f} сек',
+        )
 
     def _load_excel(self):
         if not self.session.user_id:

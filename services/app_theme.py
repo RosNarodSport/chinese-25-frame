@@ -135,9 +135,21 @@ QFrame#panelCard, QFrame#showCard {{
     border-radius: 16px;
 }}
 
-QLabel#sectionTitle {{
+QLabel#valueField {{
+    background: #E8F0FE;
+    border: 1px solid #C7D7F7;
+    border-radius: 6px;
+    padding: 2px 8px;
     color: {TEXT};
-    font-weight: 700;
+}}
+
+QLabel#gridHeader {{
+    color: {TEXT};
+    font-weight: 600;
+}}
+
+QLabel#fieldLabel {{
+    color: {TEXT_MUTED};
 }}
 
 QLabel#chipLabel {{
@@ -355,7 +367,48 @@ def apply_theme(app, form) -> None:
 
 
 def _tag_widget_roles(form) -> None:
-    for name in ('label_17', 'label_16', 'label_26'):
+    value_fields = (
+        'label_hsk_group',
+        'label_speed_show',
+        'label_color_scheme',
+        'label_tilt_show',
+        'label_num_hieroglyphs_in_show',
+        'label_hieroglyph_size',
+    )
+    for name in value_fields:
+        widget = getattr(form, name, None)
+        if widget:
+            widget.setObjectName('valueField')
+            widget.setAlignment(Qt.AlignCenter)
+
+    for name in (
+        'label_hsk_group_label',
+        'label_speed_show_label',
+        'label_label_color_scheme_label',
+        'label_tilt_show_label',
+        'label_num_hieroglyphs_in_show_label',
+        'label_hieroglyph_size_label',
+        'label_preset_name_title',
+        'label_enter_user_name',
+        'label_enter_user_password',
+    ):
+        widget = getattr(form, name, None)
+        if widget:
+            widget.setObjectName('fieldLabel')
+
+    for name in (
+        'label_col3_hsk',
+        'label_col3_color',
+        'label_col3_speed',
+        'label_col3_show',
+        'label_col3_tilt',
+        'label_col3_size',
+    ):
+        widget = getattr(form, name, None)
+        if widget:
+            widget.setObjectName('gridHeader')
+
+    for name in ('label_17', 'label_16', 'label_about_title'):
         widget = getattr(form, name, None)
         if widget:
             widget.setObjectName('sectionTitle')
@@ -392,6 +445,8 @@ def _tag_widget_roles(form) -> None:
         'pushButton_admin_delete_user',
         'pushButton_admin_update_user',
         'pushButton_admin_delete_list',
+        'pushButton_metronome',
+        'pushButton_timer',
     )
     for name in primary_buttons:
         btn = getattr(form, name, None)
