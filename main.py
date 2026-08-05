@@ -1,5 +1,7 @@
 import datetime
+import io
 import os
+import re
 import subprocess
 import sys
 import traceback
@@ -22,18 +24,22 @@ def _configure_runtime() -> None:
 _configure_runtime()
 
 from PyQt5 import uic
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import (
     QApplication,
+    QButtonGroup,
+    QCheckBox,
     QDialog,
     QDialogButtonBox,
     QFileDialog,
     QFrame,
+    QHBoxLayout,
     QInputDialog,
     QLabel,
     QLineEdit,
     QMessageBox,
+    QRadioButton,
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
@@ -64,7 +70,9 @@ from services.settings_manager import (
 )
 from services.slideshow import SlideshowController
 from services.ui_helpers import set_hieroglyph_label
-from services.app_theme import APP_FONT, GLYPH_FONT, ERROR, SUCCESS, apply_theme
+from services.app_theme import APP_FONT, GLYPH_FONT, ERROR, SUCCESS, apply_dialog_theme, apply_theme, build_stylesheet
+from services.font_scaling import apply_scaled_fonts, capture_widget_fonts, fit_font_to_rect
+from services.metronome import METRONOME_RATES, MetronomeController
 
 DESIGN_TAB = (1522, 962)
 FONT_SCALE = 1.0
@@ -90,8 +98,23 @@ def resource_path(relative_path: str) -> str:
     return os.path.join(base, relative_path)
 
 
+def _prepare_ui_text(ui_path: str) -> str:
+    with open(ui_path, encoding='utf-8') as ui_file:
+        text = ui_file.read()
+    return re.sub(
+        r'(Qt|QLineEdit|QAbstractButton|QSizePolicy)::\w+::',
+        r'\1::',
+        text,
+    )
+
+
 def load_ui():
-    return uic.loadUiType(resource_path(os.path.join('views', 'main_window.ui')))
+    ui_path = resource_path(os.path.join('views', 'main_window.ui'))
+    return uic.loadUiType(io.StringIO(_prepare_ui_text(ui_path)))
+
+
+def _optional_widget(form, name):
+    return getattr(form, name, None)
 
 
 def scale_font(widget, factor=FONT_SCALE):
@@ -128,206 +151,118 @@ def _lower_panels(form):
             panel.show()
 
 
+def _hide_decorative_lines(form):
+    for name in ('line', 'line_3', 'line_4', 'line_5'):
+        widget = getattr(form, name, None)
+        if widget is not None:
+            widget.hide()
+
+
+def _hide_panel_frames(form):
+    for name in ('_panel_col1', '_panel_col2', '_panel_col3', '_show_card'):
+        panel = getattr(form, name, None)
+        if panel is not None:
+            panel.hide()
+
+
+def _capture_design_geometries(form):
+    """Запоминает координаты из main_window.ui — основа для раскладки Designer."""
+    if hasattr(form, '_ui_design'):
+        return
+    form._ui_design = {}
+    form._ui_fonts = {}
+    for tab_name in ('tab_2', 'tab'):
+        tab = getattr(form, tab_name, None)
+        if tab is None:
+            continue
+        widgets = {}
+        for child in tab.children():
+            if isinstance(child, QWidget):
+                geometry = child.geometry()
+                widgets[id(child)] = (
+                    geometry.x(),
+                    geometry.y(),
+                    geometry.width(),
+                    geometry.height(),
+                )
+        form._ui_design[tab_name] = {'widgets': widgets}
+        form._ui_fonts[tab_name] = capture_widget_fonts(tab)
+
+
+def _tab_page_height(form, client_h: int) -> int:
+    bar = form.tabWidget.tabBar()
+    bar_h = bar.height() if bar and bar.isVisible() else 0
+    return max(1, client_h - bar_h)
+
+
+def _layout_scale(form, client_w, client_h):
+    page_h = _tab_page_height(form, client_h)
+    return client_w / DESIGN_TAB[0], page_h / DESIGN_TAB[1]
+
+
+def apply_ui_scaled_layout(form, client_w, client_h):
+    """Масштабирует виджеты по координатам из .ui — правки Qt Designer сохраняются."""
+    if not hasattr(form, '_ui_design'):
+        _capture_design_geometries(form)
+
+    scale_x, scale_y = _layout_scale(form, client_w, client_h)
+    _hide_decorative_lines(form)
+    _hide_panel_frames(form)
+
+    for tab_name in ('tab_2', 'tab'):
+        tab = getattr(form, tab_name, None)
+        design = form._ui_design.get(tab_name)
+        if tab is None or design is None:
+            continue
+
+        for child in tab.children():
+            if not isinstance(child, QWidget):
+                continue
+            saved = design['widgets'].get(id(child))
+            if saved is None:
+                continue
+            x, y, w, h = saved
+            _place(child, x * scale_x, y * scale_y, w * scale_x, h * scale_y)
+
+        font_scale = min(scale_x, scale_y)
+        UI_SCALE['font'] = font_scale
+        fonts = getattr(form, '_ui_fonts', {}).get(tab_name)
+        if fonts:
+            apply_scaled_fonts(tab, fonts, font_scale)
+
+    button_names = (
+        'pushButton_login', 'pushButton_sign_up', 'pushButton_guest', 'pushButton_launch',
+        'pushButton_save_new_settings', 'pushButton_exit', 'pushButton_load_excel',
+        'pushButton_template', 'pushButton_preset_delete', 'pushButton_preset_rename',
+        'pushButton_start_all', 'pushButton_pause', 'pushButton_end', 'pushButton_metronome',
+    )
+    for tab_name in ('tab_2', 'tab'):
+        tab = getattr(form, tab_name, None)
+        if tab is None:
+            continue
+        for name in button_names:
+            button = getattr(form, name, None)
+            if button is not None and button.parent() is tab:
+                button.raise_()
+
+
 def apply_start_tab_layout(form, tab_w, tab_h):
-    """Трёхколоночная раскладка вкладки СТАРТ на всю высоту окна."""
-    m = 14
-    bottom_h = 52
-    top = 40
-    content_h = tab_h - bottom_h - top
-    card_pad = 8
-
-    col1_w = int(tab_w * 0.22)
-    col2_w = int(tab_w * 0.34)
-    col3_w = tab_w - col1_w - col2_w - 5 * m
-
-    c1 = m
-    c2 = c1 + col1_w + m
-    c3 = c2 + col2_w + m
-
-    fh, fn, fs = 14, 10, 9
-    f = form
-
-    if hasattr(f, '_panel_col1'):
-        _place(f._panel_col1, c1 - card_pad, top - card_pad, col1_w + card_pad * 2, content_h + card_pad * 2)
-        _place(f._panel_col2, c2 - card_pad, top - card_pad, col2_w + card_pad * 2, content_h + card_pad * 2)
-        _place(f._panel_col3, c3 - card_pad, top - card_pad, col3_w + card_pad * 2, content_h + card_pad * 2)
-
-    f.line.hide()
-    f.line_3.hide()
-    f.line_4.hide()
-    f.line_5.hide()
-
-    def col1_y_positions(count):
-        step = content_h / max(count, 1)
-        return [top + int(step * i) for i in range(count)]
-
-    def col3_y_positions(count):
-        step = (content_h - 20) / max(count - 1, 1)
-        return [top + int(step * i) for i in range(count)]
-
-    # --- Колонка 1 ---
-    y1 = col1_y_positions(8)
-    _place(f.label_17, c1, y1[0], col1_w - 100, 28, fh)
-    _place(f.label_current_date, c1 + col1_w - 95, y1[0], 90, 22, fs)
-    _place(f.label_enter_user_name, c1, y1[1], 70, 28, fn)
-    _place(f.lineEdit_user_name, c1 + 74, y1[1], col1_w - 74, 28)
-    _place(f.label_enter_user_password, c1, y1[2], 70, 28, fn)
-    _place(f.lineEdit_user_password, c1 + 74, y1[2], col1_w - 74, 28)
-    btn_w = max(62, (col1_w - 10) // 3)
-    _place(f.pushButton_login, c1, y1[3], btn_w, 34, fn)
-    _place(f.pushButton_sign_up, c1 + btn_w + 5, y1[3], btn_w, 34, fn)
-    _place(f.pushButton_guest, c1 + 2 * (btn_w + 5), y1[3], col1_w - 2 * (btn_w + 5), 34, fn)
-    _place(f.label_info_for_user, c1, y1[4], col1_w, 40, fn)
-    _place(f.label_user_name, c1, y1[5], col1_w, 28, fn)
-    _place(f.label_user_level, c1, y1[6], col1_w, 26, fn)
-
-    # --- Колонка 2 ---
-    y2 = col1_y_positions(12)
-    _place(f.label_16, c2, y2[0], col2_w, 28, fh)
-    label_w = int(col2_w * 0.56)
-    val_x = c2 + label_w + 4
-    val_w = col2_w - label_w - 4
-    summary_rows = [
-        (f.label_hsk_group_label, f.label_hsk_group),
-        (f.label_speed_show_label, f.label_speed_show),
-        (f.label_label_color_scheme_label, f.label_color_scheme),
-        (f.label_show_new_start_point_label, f.label_show_new_start_point_2),
-        (f.label_num_hieroglyphs_in_show_label, f.label_num_hieroglyphs_in_show),
-        (f.label_hieroglyph_size_label, f.label_hieroglyph_size),
-    ]
-    for i, (lbl, val) in enumerate(summary_rows):
-        _place(lbl, c2, y2[1 + i], label_w, 26, fn)
-        _place(val, val_x, y2[1 + i], val_w, 26, fn)
-    _place(f.label, c2, y2[7], col2_w, 24, fn)
-    _place(f.label_history_title, c2, y2[8], 85, 26, fn)
-    _place(f.label_login_count, c2 + 90, y2[8], col2_w - 90, 26, fn)
-    combo_w = col2_w - 84
-    _place(f.comboBox_presets, c2, y2[9], combo_w, 28)
-    _place(f.pushButton_preset_delete, c2 + combo_w + 4, y2[9], 34, 28)
-    _place(f.pushButton_preset_rename, c2 + combo_w + 40, y2[9], 34, 28)
-    _place(f.pushButton_launch, c2, y2[10], 140, 36, fn)
-
-    # --- Колонка 3 ---
-    ys = col3_y_positions(13)
-    _place(f.label_26, c3, ys[0], col3_w, 28, fh)
-
-    cb_w = max(58, (col3_w - 12) // 4)
-    for i, name in enumerate(HSK_CHECKBOXES):
-        _place(getattr(f, name), c3 + i * (cb_w + 4), ys[1], cb_w, 24, fn)
-
-    slider_w = col3_w - 110
-    val_w = 105
-    _place(f.horizontalSlider_speed, c3, ys[2], slider_w, 24)
-    _place(f.label_for_horizontalSlider_speed, c3 + slider_w + 5, ys[2], val_w, 24, fn)
-
-    rb_w = max(65, (col3_w - 9) // 4)
-    for i, name in enumerate(COLOR_RADIO):
-        _place(getattr(f, name), c3 + i * (rb_w + 3), ys[3], rb_w, 24, fn)
-
-    _place(f.horizontalSlider_show_new_start_point, c3, ys[4], slider_w, 24)
-    _place(f.label_check_new_start_point, c3 + slider_w + 5, ys[4], val_w, 24, fn)
-
-    _place(f.label_num_hieroglyphs_in_show_label_2, c3, ys[5], slider_w - 10, 26, fn)
-    _place(f.lineEdit, c3 + slider_w - 10, ys[5], val_w + 15, 26)
-
-    _place(f.horizontalSlider_size, c3, ys[6], slider_w, 24)
-    _place(f.label_for_horizontalSlider_size, c3 + slider_w + 5, ys[6], val_w, 24, fn)
-
-    gap = 6
-    load_w = max(130, (col3_w - 2 * gap) // 3)
-    tpl_w = load_w
-    shuf_w = col3_w - 2 * load_w - 2 * gap
-    _place(f.pushButton_load_excel, c3, ys[7], load_w, 28, fn)
-    _place(f.pushButton_template, c3 + load_w + gap, ys[7], tpl_w, 28, fn)
-    _place(f.checkBox_shuffle, c3 + 2 * (load_w + gap), ys[7], shuf_w, 28, fn)
-
-    tilt_label_w = 55
-    _place(f.horizontalSlider_tilt, c3, ys[8], slider_w - tilt_label_w, 24)
-    _place(f.label_tilt_value, c3 + slider_w - tilt_label_w + 5, ys[8], val_w, 24, fn)
-
-    y_after_tilt = ys[8] + 30
-    preview_h = max(90, int(content_h * 0.18))
-    _place(f.label_preview_hieroglyph, c3, y_after_tilt, col3_w, preview_h)
-
-    y_show = y_after_tilt + preview_h + 8
-    _place(f.label_4, c3, y_show, col3_w, 24, fn)
-
-    y_checks = y_show + 28
-    vis_w = max(72, (col3_w - 9) // 4)
-    for i, name in enumerate(
-        ('checkBox_show_hieroglyph', 'checkBox_show_translation', 'checkBox_show_pinyin', 'checkBox_show_phrase')
-    ):
-        _place(getattr(f, name), c3 + i * (vis_w + 3), y_checks, vis_w, 24, fn)
-
-    y_save = y_checks + 30
-    _place(f.pushButton_save_new_settings, c3, y_save, col3_w, 34, fn)
-
-    by = tab_h - bottom_h + 10
-    _place(f.pushButton_exit, m, by, 100, 32, fn)
-    _place(f.label_last_date_label, m + 108, by, 175, 26, fn)
-    _place(f.label_last_date, m + 285, by, 100, 26, fn)
-    _place(f.label_work_time_total_label, m + 395, by, 120, 26, fn)
-    _place(f.label_work_time_total, m + 518, by, 80, 26, fn)
-    _place(f.label_name_of_show_complect_label, c2, by, 160, 26, fn)
-    _place(f.label_name_of_show_complect, c2 + 165, by, col2_w - 165, 26, fn)
-
-    _lower_panels(f)
+    apply_ui_scaled_layout(form, tab_w, tab_h)
 
 
 def apply_show_tab_layout(form, tab_w, tab_h):
-    """Раскладка вкладки ПОКАЗ — карточка с иероглифом и панель управления."""
-    m = 20
-    top_bar_h = 48
-    bottom_h = 64
-    card_pad = 10
-
-    pause_w = 170
-    _place(form.pushButton_pause, (tab_w - pause_w) // 2, 12, pause_w, 40, 11)
-
-    chip_w = 90
-    _place(form.label_HSK, m, top_bar_h, chip_w, 34, 10)
-    _place(form.label_number, tab_w - m - chip_w, top_bar_h, chip_w, 34, 10)
-
-    card_y = top_bar_h + 44
-    card_h = max(180, int(tab_h * 0.34))
-    if hasattr(form, '_show_card'):
-        _place(form._show_card, m - card_pad, card_y - card_pad, tab_w - 2 * m + card_pad * 2, card_h + card_pad * 2)
-
-    inner_m = m + 12
-    _place(form.label_hieroglyph, inner_m, card_y + 8, tab_w - 2 * inner_m, card_h - 16)
-
-    y = card_y + card_h + 20
-    remaining = tab_h - y - bottom_h - 16
-    row_h = max(36, remaining // 3)
-    gap = 10
-    _place(form.label_pinyin, m, y, tab_w - 2 * m, row_h, 15)
-    _place(form.label_translation, m, y + row_h + gap, tab_w - 2 * m, row_h, 14)
-    _place(form.label_phrase, m, y + 2 * (row_h + gap), tab_w - 2 * m, row_h, 12)
-
-    by = tab_h - bottom_h + 10
-    btn_w = 130
-    btn_gap = 12
-    controls_w = btn_w * 2 + btn_gap
-    prog_w = tab_w - 2 * m - controls_w - btn_gap
-    _place(form.progressBar, m, by + 10, max(200, prog_w), 24)
-    bx = tab_w - m - controls_w
-    _place(form.pushButton_start_all, bx, by, btn_w, 40, 10)
-    _place(form.pushButton_end, bx + btn_w + btn_gap, by, btn_w, 40, 10)
-
-    _lower_panels(form)
+    pass
 
 
 def relayout_window(window, form, scale_other_tabs=False):
     menu_h = window.menuBar().height() if window.menuBar() else 0
     client_w = window.width()
     client_h = window.height() - menu_h
-    tab_scale_x = client_w / DESIGN_TAB[0]
-    tab_scale_y = client_h / DESIGN_TAB[1]
+    tab_scale_x, tab_scale_y = _layout_scale(form, client_w, client_h)
     UI_SCALE['x'] = tab_scale_x
     UI_SCALE['y'] = tab_scale_y
     form.tabWidget.setGeometry(0, 0, client_w, client_h)
-    apply_start_tab_layout(form, client_w, client_h)
-    apply_show_tab_layout(form, client_w, client_h)
+    apply_ui_scaled_layout(form, client_w, client_h)
     if scale_other_tabs:
         for tab_name in ('tab_admin',):
             tab = getattr(form, tab_name, None)
@@ -348,14 +283,99 @@ def relayout_window(window, form, scale_other_tabs=False):
 
 def apply_screen_layout(window, form):
     window.setMinimumSize(1024, 700)
-    window.resize(1400, 900)
+    window.resize(1520, 1064)
+    QApplication.processEvents()
+    _capture_design_geometries(form)
     relayout_window(window, form, scale_other_tabs=True)
+
+
+class MetronomeDialog(QDialog):
+    def __init__(self, metronome: MetronomeController, parent=None):
+        super().__init__(parent)
+        self.metronome = metronome
+        self.setWindowTitle('Метроном')
+        apply_dialog_theme(self)
+        self.setMinimumWidth(380)
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(24, 24, 24, 24)
+        layout.setSpacing(12)
+        title = QLabel('Выберите частоту звука метронома (уд/мин):')
+        title.setWordWrap(True)
+        layout.addWidget(title)
+        self.enable_box = QCheckBox('Включить метроном')
+        self.enable_box.setChecked(metronome.enabled)
+        layout.addWidget(self.enable_box)
+        self._group = QButtonGroup(self)
+        self._group.setExclusive(True)
+        for rate in METRONOME_RATES:
+            radio = QRadioButton(f'{rate} / мин')
+            radio.setChecked(rate == metronome.bpm)
+            self._group.addButton(radio, rate)
+            layout.addWidget(radio)
+        buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+
+    def apply(self) -> None:
+        self.metronome.enabled = self.enable_box.isChecked()
+        checked_id = self._group.checkedId()
+        if checked_id > 0:
+            self.metronome.set_bpm(checked_id)
+
+
+class QuestionDialog(QDialog):
+    def __init__(self, title: str, message: str, parent=None, with_cancel: bool = True):
+        super().__init__(parent)
+        self.setWindowTitle(title)
+        apply_dialog_theme(self)
+        self.setMinimumWidth(400)
+        self._answer = QMessageBox.Cancel
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(24, 24, 24, 24)
+        layout.setSpacing(16)
+        label = QLabel(message)
+        label.setWordWrap(True)
+        layout.addWidget(label)
+        buttons = QDialogButtonBox()
+        yes_btn = buttons.addButton('Да', QDialogButtonBox.YesRole)
+        no_btn = buttons.addButton('Нет', QDialogButtonBox.NoRole)
+        cancel_btn = None
+        if with_cancel:
+            cancel_btn = buttons.addButton('Отмена', QDialogButtonBox.RejectRole)
+        yes_btn.clicked.connect(self._choose_yes)
+        no_btn.clicked.connect(self._choose_no)
+        if cancel_btn is not None:
+            cancel_btn.clicked.connect(self._choose_cancel)
+        layout.addWidget(buttons)
+
+    def _choose_yes(self) -> None:
+        self._answer = QMessageBox.Yes
+        self.accept()
+
+    def _choose_no(self) -> None:
+        self._answer = QMessageBox.No
+        self.accept()
+
+    def _choose_cancel(self) -> None:
+        self._answer = QMessageBox.Cancel
+        self.reject()
+
+    def answer(self) -> int:
+        return self._answer
+
+    @staticmethod
+    def ask(parent, title: str, message: str, with_cancel: bool = True) -> int:
+        dialog = QuestionDialog(title, message, parent, with_cancel=with_cancel)
+        dialog.exec_()
+        return dialog.answer()
 
 
 class SavePresetDialog(QDialog):
     def __init__(self, default_name: str, parent=None):
         super().__init__(parent)
         self.setWindowTitle('Сохранить настройки')
+        apply_dialog_theme(self)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(12)
@@ -410,6 +430,10 @@ class MainApp:
         ]
 
         self.slideshow = SlideshowController(self._on_slideshow_update, self._on_slideshow_finished)
+        self.metronome = MetronomeController()
+        self._metronome_timer = QTimer(self.window)
+        self._metronome_timer.setTimerType(Qt.PreciseTimer)
+        self._metronome_timer.timeout.connect(self._metronome_timer_tick)
         self.form.label_hieroglyph.setScaledContents(False)
         self.form.label_preview_hieroglyph.setScaledContents(False)
         self._wire_signals()
@@ -452,6 +476,13 @@ class MainApp:
         f.pushButton_exit.clicked.connect(self._exit_app)
         f.pushButton_load_excel.clicked.connect(self._load_excel)
         f.pushButton_template.clicked.connect(self._open_template)
+        metronome_button = getattr(f, 'pushButton_metronome', None)
+        if metronome_button is not None:
+            metronome_button.clicked.connect(self._configure_metronome)
+        volume_slider = getattr(f, 'verticalSlider_metronome_volume', None)
+        if volume_slider is not None:
+            volume_slider.valueChanged.connect(self._metronome_volume_changed)
+            self._metronome_volume_changed(volume_slider.value())
         f.comboBox_presets.currentIndexChanged.connect(self._preset_selected)
         f.pushButton_preset_delete.clicked.connect(self._delete_preset)
         f.pushButton_preset_rename.clicked.connect(self._rename_preset)
@@ -519,7 +550,9 @@ class MainApp:
         self.form.label_user_name.setText(
             f"<span style='color:{SUCCESS};'>{session.user_name}</span>"
         )
-        self.form.label_history_title.show()
+        history_title = _optional_widget(self.form, 'label_history_title')
+        if history_title:
+            history_title.show()
         self.form.label_login_count.setText(f'Вход №: {session.login_count + 1}')
         self.form.label_login_count.show()
         if session.is_admin:
@@ -536,6 +569,61 @@ class MainApp:
         self._load_settings_to_form(self.current_settings)
         self._update_profile_from_settings()
         self.settings_dirty = False
+
+    def _configure_metronome(self):
+        dialog = MetronomeDialog(self.metronome, self.window)
+        if dialog.exec_() != QDialog.Accepted:
+            return
+        dialog.apply()
+        self._sync_metronome_timer()
+        state = 'включён' if self.metronome.enabled else 'выключен'
+        self._show_success(
+            f'Метроном {state}: {self.metronome.frequency_label}'
+        )
+
+    def _metronome_volume_changed(self, value: int):
+        self.metronome.set_volume(value)
+
+    def _is_show_tab_active(self) -> bool:
+        return self.form.tabWidget.currentWidget() == self.form.tab
+
+    def _metronome_timer_tick(self):
+        if (
+            self.metronome.enabled
+            and self._is_show_tab_active()
+            and self.slideshow.is_running
+            and not self.slideshow.is_paused
+        ):
+            self.metronome.play_tick()
+
+    def _sync_metronome_timer(self):
+        if (
+            self.metronome.enabled
+            and self._is_show_tab_active()
+            and self.slideshow.is_running
+            and not self.slideshow.is_paused
+        ):
+            interval = self.metronome.interval_ms()
+            if self._metronome_timer.interval() != interval:
+                self._metronome_timer.setInterval(interval)
+            if not self._metronome_timer.isActive():
+                self._metronome_timer.start(interval)
+        else:
+            self._metronome_timer.stop()
+
+    def _fit_show_label_font(self, label: QLabel, text: str, design_point_size: int) -> None:
+        scale = min(UI_SCALE['x'], UI_SCALE['y'])
+        base_font = QFont(label.font())
+        base_font.setPointSize(max(8, int(design_point_size * scale)))
+        label.setFont(
+            fit_font_to_rect(
+                text,
+                base_font,
+                max(1, label.width() - 6),
+                max(1, label.height() - 4),
+                8,
+            )
+        )
 
     def _user_login(self):
         ok, result = login_user(
@@ -565,7 +653,9 @@ class MainApp:
         self.form.label_user_name.setText(
             f"<span style='color:#008000;'>Гость</span>"
         )
-        self.form.label_history_title.hide()
+        history_title = _optional_widget(self.form, 'label_history_title')
+        if history_title:
+            history_title.hide()
         self.form.label_login_count.hide()
         self.form.comboBox_presets.clear()
         self._hide_admin_tab()
@@ -576,22 +666,26 @@ class MainApp:
         self._show_success('Режим гостя')
 
     def _reset_profile_labels(self):
-        for label in (
-            self.form.label_user_name,
-            self.form.label_user_level,
-            self.form.label_hsk_group,
-            self.form.label_speed_show,
-            self.form.label_color_scheme,
-            self.form.label_show_new_start_point_2,
-            self.form.label_num_hieroglyphs_in_show,
-            self.form.label_hieroglyph_size,
-            self.form.label_last_date,
-            self.form.label_work_time_total,
-            self.form.label_name_of_show_complect,
+        for name in (
+            'label_user_name',
+            'label_user_level',
+            'label_hsk_group',
+            'label_speed_show',
+            'label_color_scheme',
+            'label_show_new_start_point_2',
+            'label_num_hieroglyphs_in_show',
+            'label_hieroglyph_size',
+            'label_last_date',
+            'label_work_time_total',
+            'label_name_of_show_complect',
         ):
-            label.setText('...')
+            label = _optional_widget(self.form, name)
+            if label:
+                label.setText('...')
         self.form.label_current_date.setText(str(datetime.date.today()))
-        self.form.label_history_title.hide()
+        history_title = _optional_widget(self.form, 'label_history_title')
+        if history_title:
+            history_title.hide()
         self.form.label_login_count.hide()
 
     def _refresh_presets(self):
@@ -714,7 +808,9 @@ class MainApp:
         self.form.label_show_new_start_point_2.setText(f'С номера -> {s.start_no}')
         self.form.label_num_hieroglyphs_in_show.setText(f'Показ по {s.article_count} шт.')
         self.form.label_hieroglyph_size.setText(str(s.font_size))
-        self.form.label_name_of_show_complect.setText(s.preset_name)
+        preset_label = _optional_widget(self.form, 'label_name_of_show_complect')
+        if preset_label:
+            preset_label.setText(s.preset_name)
         if self.session.user_id:
             self.form.label_last_date.setText(self.session.last_date or '...')
             self.form.label_work_time_total.setText(f'{self.session.work_time_total:.0f} сек')
@@ -792,10 +888,12 @@ class MainApp:
             self._display_card(card, 0, self.current_settings)
         else:
             self._display_card_from_settings(self.current_settings)
+        self._sync_metronome_timer()
 
     def _start_show(self):
         self.current_settings = self._read_settings_from_form()
         self.slideshow.start(self.current_settings)
+        self._sync_metronome_timer()
 
     def _toggle_pause(self):
         if self.slideshow.is_paused:
@@ -806,15 +904,17 @@ class MainApp:
             self.form.pushButton_pause.setText('ПРОДОЛЖИТЬ')
         else:
             self._start_show()
+            return
+        self._sync_metronome_timer()
 
     def _end_show(self):
         self.slideshow.stop()
+        self._sync_metronome_timer()
         if not self.session.is_guest and self.session.user_id:
-            reply = QMessageBox.question(
+            reply = QuestionDialog.ask(
                 self.window,
                 'Сохранить настройки',
                 'Сохранить текущие настройки показа?',
-                QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel,
             )
             if reply == QMessageBox.Cancel:
                 return
@@ -822,12 +922,14 @@ class MainApp:
                 self._save_settings()
         self.form.tabWidget.setCurrentWidget(self.form.tab_2)
         self.form.progressBar.setValue(0)
+        self._sync_metronome_timer()
 
     def _on_slideshow_update(self, card, progress, settings, card_index=0):
         self._display_card(card, progress, settings, card_index)
 
     def _on_slideshow_finished(self):
         self.form.pushButton_pause.setText('ПАУЗА')
+        self._sync_metronome_timer()
         self._show_success('Показ завершён')
 
     def _display_card_from_settings(self, settings: ShowSettings):
@@ -844,9 +946,17 @@ class MainApp:
         f = self.form
         f.label_HSK.setText(settings.word_source_label)
         f.label_number.setText(str(card.number))
-        f.label_pinyin.setText(card.pinyin if settings.show_pinyin else '')
-        f.label_translation.setText(card.translation if settings.show_translation else '')
-        f.label_phrase.setText(card.phrase if settings.show_phrase else '')
+        pinyin_text = card.pinyin if settings.show_pinyin else ''
+        translation_text = card.translation if settings.show_translation else ''
+        phrase_text = card.phrase if settings.show_phrase else ''
+        f.label_pinyin.setText(pinyin_text)
+        f.label_translation.setText(translation_text)
+        f.label_phrase.setText(phrase_text)
+        self._fit_show_label_font(f.label_HSK, settings.word_source_label, 14)
+        self._fit_show_label_font(f.label_number, str(card.number), 12)
+        self._fit_show_label_font(f.label_pinyin, pinyin_text, 24)
+        self._fit_show_label_font(f.label_translation, translation_text, 24)
+        self._fit_show_label_font(f.label_phrase, phrase_text, 28)
         size = max(12, int(settings.font_size * min(UI_SCALE['x'], UI_SCALE['y'])))
         angle = self._tilt_for_card(settings, card_index)
         if settings.show_hieroglyph:
@@ -951,15 +1061,15 @@ class MainApp:
                 self.slideshow.apply_settings(settings)
             elif not self.slideshow.is_running:
                 self._display_card_from_settings(settings)
+        self._sync_metronome_timer()
 
     def _confirm_exit_save(self) -> bool:
         if self.session.is_guest or not self.settings_dirty:
             return True
-        reply = QMessageBox.question(
+        reply = QuestionDialog.ask(
             self.window,
             'Выход',
             'Сохранить несохранённые настройки перед выходом?',
-            QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel,
         )
         if reply == QMessageBox.Cancel:
             return False

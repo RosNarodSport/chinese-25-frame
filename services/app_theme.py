@@ -18,6 +18,78 @@ APP_FONT = 'Segoe UI'
 GLYPH_FONT = 'Segoe UI'
 
 
+def build_dialog_stylesheet() -> str:
+    return f"""
+QDialog {{
+    background-color: {BG};
+    color: {TEXT};
+}}
+QDialog QWidget {{
+    background-color: {BG};
+    color: {TEXT};
+}}
+QDialog QLabel {{
+    background-color: {BG};
+    color: {TEXT};
+    font-size: 13px;
+}}
+QDialog QCheckBox,
+QDialog QRadioButton {{
+    background-color: {BG};
+    color: {TEXT};
+    font-size: 13px;
+    spacing: 8px;
+}}
+QDialog QPushButton {{
+    background-color: {SURFACE};
+    color: {TEXT};
+    border: 1px solid {BORDER};
+    border-radius: 18px;
+    padding: 6px 14px;
+    min-width: 72px;
+}}
+QDialog QPushButton:hover {{
+    border-color: {PRIMARY};
+    color: {PRIMARY};
+}}
+QDialog QCheckBox::indicator {{
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: 1px solid {BORDER};
+    background: {SURFACE};
+}}
+QDialog QCheckBox::indicator:checked {{
+    background: {PRIMARY};
+    border-color: {PRIMARY};
+}}
+QDialog QRadioButton::indicator {{
+    width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    border: 1px solid {BORDER};
+    background: {SURFACE};
+}}
+QDialog QRadioButton::indicator:checked {{
+    background: {PRIMARY};
+    border-color: {PRIMARY};
+}}
+"""
+
+
+def apply_dialog_theme(dialog) -> None:
+    from PyQt5.QtGui import QColor, QPalette
+
+    dialog.setStyleSheet(build_dialog_stylesheet())
+    dialog.setAutoFillBackground(True)
+    palette = dialog.palette()
+    palette.setColor(QPalette.Window, QColor(BG))
+    palette.setColor(QPalette.WindowText, QColor(TEXT))
+    palette.setColor(QPalette.Text, QColor(TEXT))
+    palette.setColor(QPalette.ButtonText, QColor(TEXT))
+    dialog.setPalette(palette)
+
+
 def build_stylesheet() -> str:
     return f"""
 QMainWindow, QDialog {{
@@ -255,6 +327,25 @@ QScrollBar::handle:vertical {{
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{
     height: 0;
 }}
+
+QMessageBox {{
+    background-color: {BG};
+    color: {TEXT};
+}}
+QMessageBox QLabel {{
+    background-color: {BG};
+    color: {TEXT};
+    font-size: 13px;
+    min-width: 280px;
+}}
+QMessageBox QPushButton {{
+    background-color: {SURFACE};
+    color: {TEXT};
+    border: 1px solid {BORDER};
+    border-radius: 18px;
+    padding: 6px 14px;
+    min-width: 72px;
+}}
 """
 
 
@@ -293,6 +384,7 @@ def _tag_widget_roles(form) -> None:
         'pushButton_exit',
         'pushButton_load_excel',
         'pushButton_template',
+        'pushButton_metronome',
         'pushButton_preset_delete',
         'pushButton_preset_rename',
         'pushButton_end',

@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1520</width>
-    <height>1064</height>
+    <width>1546</width>
+    <height>812</height>
    </rect>
   </property>
   <property name="mouseTracking">
@@ -26,7 +26,7 @@
    <bool>true</bool>
   </property>
   <property name="inputMethodHints">
-   <set>Qt::ImhNone</set>
+   <set>Qt::InputMethodHint::ImhNone</set>
   </property>
   <property name="documentMode">
    <bool>true</bool>
@@ -35,16 +35,21 @@
    <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>20</x>
       <y>0</y>
-      <width>1522</width>
-      <height>962</height>
+      <width>1501</width>
+      <height>741</height>
      </rect>
     </property>
     <property name="currentIndex">
      <number>0</number>
     </property>
     <widget class="QWidget" name="tab_2">
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
      <attribute name="title">
       <string>СТАРТ</string>
      </attribute>
@@ -53,12 +58,12 @@
        <rect>
         <x>120</x>
         <y>80</y>
-        <width>226</width>
+        <width>211</width>
         <height>40</height>
        </rect>
       </property>
       <property name="echoMode">
-       <enum>QLineEdit::Normal</enum>
+       <enum>QLineEdit::EchoMode::Normal</enum>
       </property>
       <property name="clearButtonEnabled">
        <bool>true</bool>
@@ -69,12 +74,12 @@
        <rect>
         <x>120</x>
         <y>140</y>
-        <width>226</width>
+        <width>211</width>
         <height>40</height>
        </rect>
       </property>
       <property name="echoMode">
-       <enum>QLineEdit::Password</enum>
+       <enum>QLineEdit::EchoMode::Password</enum>
       </property>
       <property name="clearButtonEnabled">
        <bool>true</bool>
@@ -111,7 +116,7 @@
        <rect>
         <x>20</x>
         <y>200</y>
-        <width>150</width>
+        <width>161</width>
         <height>46</height>
        </rect>
       </property>
@@ -122,9 +127,9 @@
      <widget class="QPushButton" name="pushButton_sign_up">
       <property name="geometry">
        <rect>
-        <x>200</x>
-        <y>200</y>
-        <width>150</width>
+        <x>20</x>
+        <y>250</y>
+        <width>161</width>
         <height>46</height>
        </rect>
       </property>
@@ -135,9 +140,9 @@
      <widget class="QPushButton" name="pushButton_guest">
       <property name="geometry">
        <rect>
-        <x>380</x>
-        <y>200</y>
-        <width>180</width>
+        <x>20</x>
+        <y>300</y>
+        <width>161</width>
         <height>46</height>
        </rect>
       </property>
@@ -145,25 +150,12 @@
        <string>Войти, как гость</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_history_title">
-      <property name="geometry">
-       <rect>
-        <x>360</x>
-        <y>360</y>
-        <width>120</width>
-        <height>42</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>История</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="label_login_count">
       <property name="geometry">
        <rect>
-        <x>360</x>
-        <y>400</y>
-        <width>200</width>
+        <x>370</x>
+        <y>510</y>
+        <width>81</width>
         <height>42</height>
        </rect>
       </property>
@@ -176,7 +168,7 @@
        <rect>
         <x>360</x>
         <y>460</y>
-        <width>280</width>
+        <width>201</width>
         <height>40</height>
        </rect>
       </property>
@@ -184,7 +176,7 @@
      <widget class="QPushButton" name="pushButton_preset_delete">
       <property name="geometry">
        <rect>
-        <x>660</x>
+        <x>570</x>
         <y>460</y>
         <width>40</width>
         <height>40</height>
@@ -197,7 +189,7 @@
      <widget class="QPushButton" name="pushButton_preset_rename">
       <property name="geometry">
        <rect>
-        <x>710</x>
+        <x>620</x>
         <y>460</y>
         <width>40</width>
         <height>40</height>
@@ -210,9 +202,9 @@
      <widget class="QPushButton" name="pushButton_launch">
       <property name="geometry">
        <rect>
-        <x>360</x>
-        <y>520</y>
-        <width>200</width>
+        <x>1140</x>
+        <y>500</y>
+        <width>281</width>
         <height>50</height>
        </rect>
       </property>
@@ -223,9 +215,9 @@
      <widget class="QPushButton" name="pushButton_load_excel">
       <property name="geometry">
        <rect>
-        <x>980</x>
-        <y>480</y>
-        <width>160</width>
+        <x>1130</x>
+        <y>270</y>
+        <width>181</width>
         <height>40</height>
        </rect>
       </property>
@@ -236,8 +228,8 @@
      <widget class="QPushButton" name="pushButton_template">
       <property name="geometry">
        <rect>
-        <x>1150</x>
-        <y>480</y>
+        <x>1350</x>
+        <y>270</y>
         <width>120</width>
         <height>40</height>
        </rect>
@@ -249,9 +241,9 @@
      <widget class="QCheckBox" name="checkBox_shuffle">
       <property name="geometry">
        <rect>
-        <x>980</x>
-        <y>540</y>
-        <width>160</width>
+        <x>1130</x>
+        <y>330</y>
+        <width>121</width>
         <height>40</height>
        </rect>
       </property>
@@ -262,9 +254,9 @@
      <widget class="QSlider" name="horizontalSlider_tilt">
       <property name="geometry">
        <rect>
-        <x>1160</x>
-        <y>540</y>
-        <width>200</width>
+        <x>810</x>
+        <y>230</y>
+        <width>201</width>
         <height>40</height>
        </rect>
       </property>
@@ -278,15 +270,15 @@
        <number>0</number>
       </property>
       <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+       <enum>Qt::Orientation::Horizontal</enum>
       </property>
      </widget>
      <widget class="QLabel" name="label_tilt_value">
       <property name="geometry">
        <rect>
-        <x>1370</x>
-        <y>540</y>
-        <width>80</width>
+        <x>1050</x>
+        <y>220</y>
+        <width>41</width>
         <height>40</height>
        </rect>
       </property>
@@ -297,10 +289,10 @@
      <widget class="QLabel" name="label_preview_hieroglyph">
       <property name="geometry">
        <rect>
-        <x>980</x>
-        <y>600</y>
-        <width>322</width>
-        <height>100</height>
+        <x>790</x>
+        <y>330</y>
+        <width>311</width>
+        <height>231</height>
        </rect>
       </property>
       <property name="font">
@@ -312,14 +304,14 @@
        <string>电脑</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_exit">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>880</y>
+        <x>30</x>
+        <y>570</y>
         <width>200</width>
         <height>50</height>
        </rect>
@@ -331,29 +323,29 @@
      <widget class="QLabel" name="label_info_for_user">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>260</y>
-        <width>322</width>
-        <height>102</height>
+        <x>11</x>
+        <y>650</y>
+        <width>761</width>
+        <height>41</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>20</pointsize>
+        <pointsize>16</pointsize>
        </font>
       </property>
       <property name="text">
        <string>Информация по входу</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignmentFlag::AlignLeading|Qt::AlignmentFlag::AlignLeft|Qt::AlignmentFlag::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_user_name">
       <property name="geometry">
        <rect>
         <x>80</x>
-        <y>360</y>
+        <y>390</y>
         <width>202</width>
         <height>62</height>
        </rect>
@@ -367,15 +359,15 @@
        <string>...</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_speed_show">
       <property name="geometry">
        <rect>
-        <x>660</x>
+        <x>560</x>
         <y>140</y>
-        <width>182</width>
+        <width>71</width>
         <height>42</height>
        </rect>
       </property>
@@ -386,9 +378,9 @@
      <widget class="QLabel" name="label_hieroglyph_size">
       <property name="geometry">
        <rect>
-        <x>660</x>
+        <x>560</x>
         <y>380</y>
-        <width>182</width>
+        <width>71</width>
         <height>42</height>
        </rect>
       </property>
@@ -399,9 +391,9 @@
      <widget class="QLabel" name="label_hsk_group">
       <property name="geometry">
        <rect>
-        <x>660</x>
+        <x>560</x>
         <y>80</y>
-        <width>182</width>
+        <width>71</width>
         <height>42</height>
        </rect>
       </property>
@@ -412,9 +404,9 @@
      <widget class="QLabel" name="label_color_scheme">
       <property name="geometry">
        <rect>
-        <x>660</x>
+        <x>560</x>
         <y>200</y>
-        <width>202</width>
+        <width>91</width>
         <height>42</height>
        </rect>
       </property>
@@ -435,15 +427,15 @@
        <string>...</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_show_new_start_point_2">
       <property name="geometry">
        <rect>
-        <x>660</x>
+        <x>560</x>
         <y>260</y>
-        <width>242</width>
+        <width>71</width>
         <height>42</height>
        </rect>
       </property>
@@ -454,9 +446,9 @@
      <widget class="QLabel" name="label_num_hieroglyphs_in_show">
       <property name="geometry">
        <rect>
-        <x>660</x>
+        <x>560</x>
         <y>320</y>
-        <width>282</width>
+        <width>71</width>
         <height>42</height>
        </rect>
       </property>
@@ -464,46 +456,33 @@
        <string>...</string>
       </property>
      </widget>
-     <widget class="QLabel" name="label_name_of_show_complect">
-      <property name="geometry">
-       <rect>
-        <x>1180</x>
-        <y>840</y>
-        <width>302</width>
-        <height>42</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>name_of_show_complect</string>
-      </property>
-     </widget>
      <widget class="QLabel" name="label_16">
       <property name="geometry">
        <rect>
-        <x>380</x>
+        <x>360</x>
         <y>0</y>
-        <width>562</width>
+        <width>381</width>
         <height>62</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>24</pointsize>
+        <pointsize>16</pointsize>
        </font>
       </property>
       <property name="text">
-       <string>Ваши предыдущие настройки</string>
+       <string>Предыдущие настройки</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_work_time_total">
       <property name="geometry">
        <rect>
-        <x>700</x>
-        <y>840</y>
-        <width>202</width>
+        <x>529</x>
+        <y>550</y>
+        <width>121</width>
         <height>42</height>
        </rect>
       </property>
@@ -514,9 +493,9 @@
      <widget class="QLabel" name="label_last_date">
       <property name="geometry">
        <rect>
-        <x>300</x>
-        <y>840</y>
-        <width>182</width>
+        <x>549</x>
+        <y>590</y>
+        <width>151</width>
         <height>42</height>
        </rect>
       </property>
@@ -527,9 +506,9 @@
      <widget class="QLabel" name="label_label_color_scheme_label">
       <property name="geometry">
        <rect>
-        <x>460</x>
+        <x>380</x>
         <y>200</y>
-        <width>182</width>
+        <width>161</width>
         <height>42</height>
        </rect>
       </property>
@@ -537,15 +516,15 @@
        <string>Цветовая схема:</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_num_hieroglyphs_in_show_label">
       <property name="geometry">
        <rect>
-        <x>380</x>
+        <x>351</x>
         <y>320</y>
-        <width>262</width>
+        <width>191</width>
         <height>42</height>
        </rect>
       </property>
@@ -553,15 +532,15 @@
        <string>Число статей в показе:</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_last_date_label">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>840</y>
-        <width>262</width>
+        <x>330</x>
+        <y>590</y>
+        <width>211</width>
         <height>42</height>
        </rect>
       </property>
@@ -569,15 +548,15 @@
        <string>Дата последнего входа:</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_show_new_start_point_label">
       <property name="geometry">
        <rect>
-        <x>400</x>
+        <x>371</x>
         <y>260</y>
-        <width>242</width>
+        <width>171</width>
         <height>42</height>
        </rect>
       </property>
@@ -585,15 +564,15 @@
        <string>С какого No старт:</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_speed_show_label">
       <property name="geometry">
        <rect>
-        <x>400</x>
+        <x>351</x>
         <y>140</y>
-        <width>242</width>
+        <width>191</width>
         <height>42</height>
        </rect>
       </property>
@@ -601,15 +580,15 @@
        <string>Задержка при  показе:</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_hieroglyph_size_label">
       <property name="geometry">
        <rect>
-        <x>460</x>
+        <x>361</x>
         <y>380</y>
-        <width>182</width>
+        <width>181</width>
         <height>42</height>
        </rect>
       </property>
@@ -617,31 +596,15 @@
        <string>Размер шрифта:</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_name_of_show_complect_label">
-      <property name="geometry">
-       <rect>
-        <x>920</x>
-        <y>840</y>
-        <width>242</width>
-        <height>42</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Название коплекта:</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_work_time_total_label">
       <property name="geometry">
        <rect>
-        <x>480</x>
-        <y>840</y>
-        <width>202</width>
+        <x>340</x>
+        <y>550</y>
+        <width>141</width>
         <height>42</height>
        </rect>
       </property>
@@ -649,15 +612,15 @@
        <string>Время занятий:</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_hsk_group_label">
       <property name="geometry">
        <rect>
-        <x>460</x>
+        <x>431</x>
         <y>80</y>
-        <width>182</width>
+        <width>111</width>
         <height>42</height>
        </rect>
       </property>
@@ -665,61 +628,61 @@
        <string>Группа HSK:</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
       </property>
      </widget>
      <widget class="Line" name="line_3">
       <property name="geometry">
        <rect>
-        <x>360</x>
+        <x>330</x>
         <y>20</y>
         <width>40</width>
         <height>502</height>
        </rect>
       </property>
       <property name="orientation">
-       <enum>Qt::Vertical</enum>
+       <enum>Qt::Orientation::Vertical</enum>
       </property>
      </widget>
      <widget class="Line" name="line_4">
       <property name="geometry">
        <rect>
-        <x>920</x>
-        <y>60</y>
+        <x>750</x>
+        <y>21</y>
         <width>40</width>
-        <height>722</height>
+        <height>601</height>
        </rect>
       </property>
       <property name="orientation">
-       <enum>Qt::Vertical</enum>
+       <enum>Qt::Orientation::Vertical</enum>
       </property>
      </widget>
      <widget class="QLabel" name="label_26">
       <property name="geometry">
        <rect>
-        <x>960</x>
+        <x>781</x>
         <y>0</y>
-        <width>502</width>
+        <width>651</width>
         <height>62</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>24</pointsize>
+        <pointsize>20</pointsize>
        </font>
       </property>
       <property name="text">
        <string>Новые настройки игры</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QCheckBox" name="checkBox_show_hsk1">
       <property name="geometry">
        <rect>
-        <x>980</x>
-        <y>80</y>
+        <x>1390</x>
+        <y>70</y>
         <width>102</width>
         <height>34</height>
        </rect>
@@ -737,8 +700,8 @@
      <widget class="QCheckBox" name="checkBox_show_hsk1_2">
       <property name="geometry">
        <rect>
-        <x>1120</x>
-        <y>80</y>
+        <x>1390</x>
+        <y>120</y>
         <width>102</width>
         <height>34</height>
        </rect>
@@ -756,8 +719,8 @@
      <widget class="QCheckBox" name="checkBox_show_hsk1_3">
       <property name="geometry">
        <rect>
-        <x>1260</x>
-        <y>80</y>
+        <x>1390</x>
+        <y>170</y>
         <width>102</width>
         <height>34</height>
        </rect>
@@ -775,8 +738,8 @@
      <widget class="QCheckBox" name="checkBox_show_hsk1_4">
       <property name="geometry">
        <rect>
-        <x>1380</x>
-        <y>80</y>
+        <x>1390</x>
+        <y>220</y>
         <width>102</width>
         <height>34</height>
        </rect>
@@ -794,9 +757,9 @@
      <widget class="QSlider" name="horizontalSlider_show_new_start_point">
       <property name="geometry">
        <rect>
-        <x>980</x>
-        <y>260</y>
-        <width>382</width>
+        <x>810</x>
+        <y>130</y>
+        <width>201</width>
         <height>42</height>
        </rect>
       </property>
@@ -813,36 +776,36 @@
        <number>1</number>
       </property>
       <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+       <enum>Qt::Orientation::Horizontal</enum>
       </property>
      </widget>
      <widget class="QLabel" name="label_check_new_start_point">
       <property name="geometry">
        <rect>
-        <x>1380</x>
-        <y>260</y>
-        <width>102</width>
+        <x>1020</x>
+        <y>110</y>
+        <width>71</width>
         <height>42</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>20</pointsize>
+        <pointsize>16</pointsize>
        </font>
       </property>
       <property name="text">
        <string>#</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QRadioButton" name="radioButton_black">
       <property name="geometry">
        <rect>
-        <x>980</x>
-        <y>200</y>
-        <width>142</width>
+        <x>1120</x>
+        <y>70</y>
+        <width>111</width>
         <height>34</height>
        </rect>
       </property>
@@ -857,8 +820,8 @@
       <property name="geometry">
        <rect>
         <x>1120</x>
-        <y>200</y>
-        <width>142</width>
+        <y>120</y>
+        <width>111</width>
         <height>34</height>
        </rect>
       </property>
@@ -872,9 +835,9 @@
      <widget class="QRadioButton" name="radioButton_blue">
       <property name="geometry">
        <rect>
-        <x>1260</x>
-        <y>200</y>
-        <width>102</width>
+        <x>1120</x>
+        <y>170</y>
+        <width>111</width>
         <height>34</height>
        </rect>
       </property>
@@ -885,9 +848,9 @@
      <widget class="QRadioButton" name="radioButton_red">
       <property name="geometry">
        <rect>
-        <x>1380</x>
-        <y>200</y>
-        <width>142</width>
+        <x>1120</x>
+        <y>220</y>
+        <width>111</width>
         <height>32</height>
        </rect>
       </property>
@@ -898,10 +861,10 @@
      <widget class="QSlider" name="horizontalSlider_speed">
       <property name="geometry">
        <rect>
-        <x>980</x>
-        <y>140</y>
-        <width>382</width>
-        <height>44</height>
+        <x>810</x>
+        <y>82</y>
+        <width>201</width>
+        <height>41</height>
        </rect>
       </property>
       <property name="minimum">
@@ -923,36 +886,36 @@
        <number>500</number>
       </property>
       <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+       <enum>Qt::Orientation::Horizontal</enum>
       </property>
      </widget>
      <widget class="QLabel" name="label_for_horizontalSlider_speed">
       <property name="geometry">
        <rect>
-        <x>1380</x>
-        <y>140</y>
-        <width>102</width>
-        <height>42</height>
+        <x>1020</x>
+        <y>70</y>
+        <width>81</width>
+        <height>31</height>
        </rect>
       </property>
       <property name="font">
        <font>
-        <pointsize>16</pointsize>
+        <pointsize>12</pointsize>
        </font>
       </property>
       <property name="text">
        <string>5.01 сек</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QLineEdit" name="lineEdit">
       <property name="geometry">
        <rect>
-        <x>1360</x>
-        <y>320</y>
-        <width>102</width>
+        <x>1040</x>
+        <y>270</y>
+        <width>71</width>
         <height>40</height>
        </rect>
       </property>
@@ -960,9 +923,9 @@
      <widget class="QSlider" name="horizontalSlider_size">
       <property name="geometry">
        <rect>
-        <x>980</x>
-        <y>380</y>
-        <width>482</width>
+        <x>810</x>
+        <y>180</y>
+        <width>201</width>
         <height>44</height>
        </rect>
       </property>
@@ -979,16 +942,16 @@
        <number>48</number>
       </property>
       <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+       <enum>Qt::Orientation::Horizontal</enum>
       </property>
      </widget>
      <widget class="QLabel" name="label_for_horizontalSlider_size">
       <property name="geometry">
        <rect>
-        <x>960</x>
-        <y>420</y>
-        <width>522</width>
-        <height>142</height>
+        <x>1030</x>
+        <y>160</y>
+        <width>51</width>
+        <height>51</height>
        </rect>
       </property>
       <property name="font">
@@ -1001,23 +964,23 @@
        <string>24</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_num_hieroglyphs_in_show_label_2">
       <property name="geometry">
        <rect>
-        <x>980</x>
-        <y>320</y>
-        <width>362</width>
+        <x>780</x>
+        <y>270</y>
+        <width>231</width>
         <height>42</height>
        </rect>
       </property>
       <property name="text">
-       <string>Новое Число статей в показе:</string>
+       <string>Показывать корточек:</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_17">
@@ -1031,35 +994,22 @@
       </property>
       <property name="font">
        <font>
-        <pointsize>24</pointsize>
+        <pointsize>20</pointsize>
        </font>
       </property>
       <property name="text">
        <string>ВХОД</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-     <widget class="Line" name="line">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>800</y>
-        <width>1482</width>
-        <height>32</height>
-       </rect>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QCheckBox" name="checkBox_show_pinyin">
       <property name="geometry">
        <rect>
-        <x>1280</x>
-        <y>640</y>
-        <width>122</width>
+        <x>1250</x>
+        <y>170</y>
+        <width>111</width>
         <height>32</height>
        </rect>
       </property>
@@ -1073,9 +1023,9 @@
      <widget class="QCheckBox" name="checkBox_show_hieroglyph">
       <property name="geometry">
        <rect>
-        <x>980</x>
-        <y>640</y>
-        <width>162</width>
+        <x>1250</x>
+        <y>70</y>
+        <width>121</width>
         <height>34</height>
        </rect>
       </property>
@@ -1089,9 +1039,9 @@
      <widget class="QCheckBox" name="checkBox_show_phrase">
       <property name="geometry">
        <rect>
-        <x>1400</x>
-        <y>640</y>
-        <width>102</width>
+        <x>1250</x>
+        <y>220</y>
+        <width>111</width>
         <height>32</height>
        </rect>
       </property>
@@ -1105,9 +1055,9 @@
      <widget class="QCheckBox" name="checkBox_show_translation">
       <property name="geometry">
        <rect>
-        <x>1140</x>
-        <y>640</y>
-        <width>162</width>
+        <x>1250</x>
+        <y>120</y>
+        <width>121</width>
         <height>32</height>
        </rect>
       </property>
@@ -1118,67 +1068,25 @@
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="QLabel" name="label_4">
-      <property name="geometry">
-       <rect>
-        <x>940</x>
-        <y>580</y>
-        <width>562</width>
-        <height>42</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>24</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Показать</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
      <widget class="Line" name="line_5">
       <property name="geometry">
        <rect>
-        <x>34</x>
-        <y>500</y>
-        <width>902</width>
+        <x>30</x>
+        <y>680</y>
+        <width>1441</width>
         <height>40</height>
        </rect>
       </property>
       <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>540</y>
-        <width>922</width>
-        <height>40</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>24</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Иная служебная информация</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <enum>Qt::Orientation::Horizontal</enum>
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_save_new_settings">
       <property name="geometry">
        <rect>
-        <x>980</x>
-        <y>720</y>
-        <width>322</width>
+        <x>1140</x>
+        <y>420</y>
+        <width>281</width>
         <height>62</height>
        </rect>
       </property>
@@ -1190,13 +1098,26 @@
       <property name="geometry">
        <rect>
         <x>192</x>
-        <y>0</y>
-        <width>162</width>
-        <height>62</height>
+        <y>11</y>
+        <width>141</width>
+        <height>41</height>
        </rect>
       </property>
       <property name="text">
        <string>...</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_metronome">
+      <property name="geometry">
+       <rect>
+        <x>1300</x>
+        <y>330</y>
+        <width>171</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Метроном</string>
       </property>
      </widget>
     </widget>
@@ -1208,7 +1129,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>620</y>
+        <y>500</y>
         <width>1442</width>
         <height>182</height>
        </rect>
@@ -1216,7 +1137,6 @@
       <property name="font">
        <font>
         <pointsize>28</pointsize>
-        <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
@@ -1224,7 +1144,7 @@
        <string>Фраза</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
       <property name="wordWrap">
        <bool>false</bool>
@@ -1239,6 +1159,11 @@
         <height>62</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
       <property name="text">
        <string>№</string>
       </property>
@@ -1251,6 +1176,11 @@
         <width>82</width>
         <height>62</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
       </property>
       <property name="text">
        <string>HSK</string>
@@ -1274,16 +1204,16 @@
        <string>pinyin</string>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_hieroglyph">
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>100</y>
+        <y>80</y>
         <width>1442</width>
-        <height>242</height>
+        <height>311</height>
        </rect>
       </property>
       <property name="baseSize">
@@ -1296,7 +1226,6 @@
        <font>
         <family>MS Shell Dlg 2</family>
         <pointsize>96</pointsize>
-        <weight>50</weight>
         <italic>false</italic>
         <bold>false</bold>
        </font>
@@ -1311,7 +1240,7 @@
        <bool>false</bool>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
       <property name="wordWrap">
        <bool>false</bool>
@@ -1321,7 +1250,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>500</y>
+        <y>440</y>
         <width>1442</width>
         <height>122</height>
        </rect>
@@ -1338,7 +1267,7 @@
        <bool>true</bool>
       </property>
       <property name="alignment">
-       <set>Qt::AlignCenter</set>
+       <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
       <property name="wordWrap">
        <bool>false</bool>
@@ -1347,8 +1276,8 @@
      <widget class="QPushButton" name="pushButton_end">
       <property name="geometry">
        <rect>
-        <x>1260</x>
-        <y>820</y>
+        <x>1080</x>
+        <y>660</y>
         <width>202</width>
         <height>62</height>
        </rect>
@@ -1361,8 +1290,8 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>840</y>
-        <width>942</width>
+        <y>670</y>
+        <width>661</width>
         <height>42</height>
        </rect>
       </property>
@@ -1376,8 +1305,8 @@
      <widget class="QPushButton" name="pushButton_start_all">
       <property name="geometry">
        <rect>
-        <x>1060</x>
-        <y>820</y>
+        <x>890</x>
+        <y>660</y>
         <width>182</width>
         <height>62</height>
        </rect>
@@ -1397,6 +1326,49 @@
       </property>
       <property name="text">
        <string>ПАУЗА</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_metronome_volume">
+      <property name="geometry">
+       <rect>
+        <x>1350</x>
+        <y>100</y>
+        <width>72</width>
+        <height>42</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="text">
+       <string>Громкость</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignmentFlag::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QSlider" name="verticalSlider_metronome_volume">
+      <property name="geometry">
+       <rect>
+        <x>1380</x>
+        <y>150</y>
+        <width>40</width>
+        <height>211</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <number>100</number>
+      </property>
+      <property name="value">
+       <number>80</number>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Orientation::Vertical</enum>
       </property>
      </widget>
     </widget>
@@ -1463,7 +1435,7 @@
        </rect>
       </property>
       <property name="echoMode">
-       <enum>QLineEdit::Password</enum>
+       <enum>QLineEdit::EchoMode::Password</enum>
       </property>
       <property name="placeholderText">
        <string>Новый пароль</string>
@@ -1527,8 +1499,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1520</width>
-     <height>42</height>
+     <width>1546</width>
+     <height>33</height>
     </rect>
    </property>
    <property name="autoFillBackground">
